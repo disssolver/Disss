@@ -3,83 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disss | Bio</title>
+    <title>Disss | Profile</title>
     <style>
+        /* Общие настройки страницы */
         body, html {
             margin: 0; padding: 0; height: 100%;
-            /* ПОЛНОСТЬЮ ЧЕРНЫЙ ФОН */
-            background: #000000; 
-            color: white;
-            font-family: sans-serif;
+            background: #000; color: white;
+            font-family: 'Segoe UI', sans-serif; /* Более чистый шрифт */
             display: flex; justify-content: center; align-items: center;
             overflow: hidden;
         }
 
+        /* ЧИСТО ЧЕРНЫЙ ФОН */
+        .bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: -2;
+        }
+
+        /* ТАБЛИЧКА "ЖИДКОЕ СТЕКЛО" */
         .card {
-            /* Полупрозрачная карточка для эффекта глубины */
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px; border-radius: 30px;
-            text-align: center; width: 280px;
-            box-shadow: 0 10px 30px rgba(0,0,0,1);
+            /* Квадратная форма (шире, чем была) */
+            width: 400px; 
+            height: 400px;
+            
+            /* Эффект Liquid Glass (блюр и прозрачность) */
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            
+            /* Граница и закругление */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 40px;
+            
+            /* Тень для объема */
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            
+            /* Внутренние отступы */
+            padding: 30px;
+            box-sizing: border-box; /* Чтобы padding не увеличивал размер */
+            
+            /* Размещение элементов */
+            display: flex; flex-direction: column;
+            justify-content: space-between;
         }
 
+        /* ВЕРХНЯЯ СЕКЦИЯ (Фото + Кнопки) */
+        .top-section {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* Фото слева */
+            gap: 25px; /* Отступ между фото и кнопками */
+        }
+
+        /* АВАТАРКА СЛЕВА */
         .avatar {
-            width: 130px; height: 130px;
-            border-radius: 50%; border: 2px solid rgba(255,255,255,0.3);
-            margin-bottom: 20px; object-fit: cover;
+            width: 140px; height: 140px;
+            border-radius: 30px; /* Квадратные с закруглением */
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            object-fit: cover;
         }
 
-        h1 { margin: 10px 0; font-size: 28px; letter-spacing: 3px; font-weight: bold; }
+        /* БЛОК КНОПОК СПРАВА */
+        .links-group {
+            display: flex; flex-direction: column;
+            gap: 10px; flex-grow: 1; /* Кнопки занимают оставшееся место */
+        }
 
+        /* КНОПКИ-ССЫЛКИ */
         .btn {
             display: block; text-decoration: none; color: white;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 12px; margin: 10px 0; border-radius: 12px;
-            font-weight: bold; transition: 0.3s;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 15px; border-radius: 12px;
+            font-weight: 600; font-size: 14px;
             text-transform: uppercase;
-            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.2s;
+            text-align: center;
         }
 
-        .btn:hover { background: rgba(255, 255, 255, 0.15); transform: scale(1.02); }
+        .btn:hover { background: rgba(255, 255, 255, 0.15); transform: translateY(-1px); }
 
-        #playBtn {
-            background: #fff; border: none; border-radius: 50%;
-            width: 50px; height: 50px; cursor: pointer;
-            font-size: 20px; margin-top: 20px;
-            display: inline-flex; align-items: center; justify-content: center;
+        /* НИК ПО ЦЕНТРУ СНИЗУ */
+        h1 {
+            margin: 0;
+            text-align: center;
+            font-size: 40px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            background: linear-gradient(180deg, #fff 0%, #aaa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
 <body>
+    <div class="bg"></div>
     <div class="card">
-        <img src="ava.jpg" class="avatar">
-        <h1>DISSS</h1>
-        <div class="links">
-            <a href="https://t.me/jurabek1608" class="btn">TELEGRAM</a>
-            <a href="https://discordapp.com/users/1035880231619280926" class="btn">DISCORD</a>
-            <a href="https://steamcommunity.com/profiles/76561199554598143" class="btn">STEAM</a>
+        <div class="top-section">
+            <img src="ava.jpg" class="avatar">
+            <div class="links-group">
+                <a href="https://t.me/jurabek1608" class="btn">TELEGRAM</a>
+                <a href="https://discordapp.com/users/1035880231619280926" class="btn">DISCORD</a>
+                <a href="https://steamcommunity.com/profiles/76561199554598143" class="btn">STEAM</a>
+            </div>
         </div>
-        <button id="playBtn">▶</button>
-        <audio id="audio" loop>
-            <source src="music.mp3" type="audio/mpeg">
-        </audio>
+        
+        <h1>DISSS</h1>
     </div>
-
-    <script>
-        const audio = document.getElementById('audio');
-        const btn = document.getElementById('playBtn');
-        btn.onclick = () => {
-            if (audio.paused) {
-                audio.play();
-                btn.innerText = '⏸';
-            } else {
-                audio.pause();
-                btn.innerText = '▶';
-            }
-        };
-    </script>
 </body>
 </html>
