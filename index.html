@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio | Flat Design with Button Depth</title>
+    <title>Bio | Liquid Glass Edition</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -11,40 +11,45 @@
             width: 100%; height: 100vh;
             display: flex; justify-content: center; align-items: center;
             background: #000; color: white;
-            font-family: 'Segoe UI', sans-serif;
-            overflow: hidden; perspective: 2000px;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            overflow: hidden;
         }
 
         #bg-parallax {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
             z-index: -1; object-fit: cover;
-            filter: brightness(0.4) blur(2px);
+            filter: brightness(0.5) blur(3px);
             transform: scale(1.1);
         }
 
         .panel-container {
             position: relative;
             display: flex; flex-direction: column; align-items: center;
-            transition: transform 0.1s ease-out, top 0.8s cubic-bezier(0.4, 0, 0.2, 1), left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.1s ease-out, top 0.9s cubic-bezier(0.23, 1, 0.32, 1), left 0.9s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
+        /* LIQUID GLASS EFFECT */
         .glass-base {
-            background: rgba(140, 140, 140, 0.75);
-            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.45);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             width: 440px;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.7s cubic-bezier(0.5, 0, 0.1, 1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         }
 
-        /* CLOCK PANEL (TOP) */
+        /* CLOCK STYLE */
         .real-time-clock {
             position: absolute;
             top: 20px; left: 50%;
             transform: translateX(-50%);
-            font-size: 32px; font-weight: 900;
-            color: #fff; letter-spacing: 5px;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 36px; font-weight: 900;
+            color: rgba(255, 255, 255, 0.95);
+            letter-spacing: 6px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            transition: all 0.7s cubic-bezier(0.5, 0, 0.1, 1);
             z-index: 1; opacity: 0;
             pointer-events: none;
         }
@@ -53,70 +58,81 @@
         .card-main {
             position: relative;
             z-index: 100; 
-            padding: 35px; border-radius: 40px;
+            padding: 35px; border-radius: 45px;
         }
 
-        /* BUTTON DEPTH EFFECT LOGIC */
+        /* BUTTON DEPTH & SOFT SHADOWS */
         .mini-circle-btn {
-            width: 22px; height: 22px;
-            background: #fff; border-radius: 50%;
-            margin: 12px auto 4px; cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.3); /* Initial shadow for depth */
+            width: 24px; height: 24px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            margin: 15px auto 5px; cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* Pressed / Active State for Circle Button */
         .mini-circle-btn.active {
             background: #000;
-            transform: translateY(3px); /* Stays pushed down */
-            box-shadow: 0 0px 0 rgba(0,0,0,0);
+            transform: scale(0.9) translateY(2px);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
             border: 2px solid #fff;
         }
 
         .btn {
             text-decoration: none; color: #000;
-            background: #fff; border: none;
-            padding: 12px; border-radius: 16px;
-            font-size: 13px; font-weight: 900; 
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 14px; border-radius: 20px;
+            font-size: 13px; font-weight: 800; 
             text-transform: uppercase; text-align: center;
-            transition: all 0.3s ease; cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
             display: block; width: 100%;
             position: relative; z-index: 200;
-            box-shadow: 0 5px 0 rgba(0,0,0,0.2); /* Depth effect */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
         }
 
-        /* Pressed / Active State for Main Button */
         .btn.active {
-            background: #000 !important;
+            background: rgba(0, 0, 0, 0.8) !important;
             color: #fff !important;
-            transform: translateY(4px); /* Stays pushed down */
-            box-shadow: 0 0px 0 rgba(0,0,0,0);
+            transform: scale(0.98) translateY(3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
         }
 
-        /* SOCIAL PANEL (BOTTOM) */
+        /* EXTRA PANEL (BRIGHTER) */
         .card-extra {
             position: absolute;
             bottom: 0; left: 0;
             z-index: 10;
-            height: 140px; border-radius: 35px;
+            height: 140px; border-radius: 40px;
             display: flex; justify-content: space-around; align-items: center;
             padding: 0 25px; opacity: 0;
             pointer-events: none;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0.1, 1);
         }
 
-        /* REVEAL WITHOUT ROTATION */
-        .panel-container.show-clock .real-time-clock { top: -70px; opacity: 1; }
-        .panel-container.is-open .card-extra { bottom: -150px; opacity: 1; pointer-events: auto; }
+        /* ANIMATION REVEAL */
+        .panel-container.show-clock .real-time-clock { top: -80px; opacity: 1; }
+        .panel-container.is-open .card-extra { bottom: -160px; opacity: 1; pointer-events: auto; }
 
-        .clock-label { font-size: 10px; font-weight: 900; text-transform: uppercase; color: rgba(255,255,255,0.7); pointer-events: none; }
-        .profile-top { display: flex; align-items: center; gap: 25px; margin-bottom: 20px; }
-        .avatar { width: 115px; height: 115px; border-radius: 30px; object-fit: cover; border: 2px solid rgba(255,255,255,0.5); }
+        /* BRIGHT SOCIAL ICONS */
         .social-icon {
-            width: 85px; height: 85px; background: rgba(255,255,255,0.3);
-            border-radius: 25px; display: flex; justify-content: center; align-items: center;
-            text-decoration: none; color: black; font-weight: 900; transition: 0.3s;
+            width: 85px; height: 85px; 
+            background: rgba(255, 255, 255, 0.85); /* Much brighter */
+            border-radius: 28px; display: flex; justify-content: center; align-items: center;
+            text-decoration: none; color: #000; font-weight: 900; 
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
         }
+        .social-icon:hover {
+            background: #fff;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .clock-label { font-size: 10px; font-weight: 900; text-transform: uppercase; color: rgba(255,255,255,0.8); }
+        .avatar { width: 120px; height: 120px; border-radius: 35px; object-fit: cover; border: 2px solid rgba(255,255,255,0.4); }
+        .profile-top { display: flex; align-items: center; gap: 25px; margin-bottom: 25px; }
     </style>
 </head>
 <body>
@@ -134,7 +150,7 @@
                     <div class="mini-circle-btn" id="clock-trigger"></div>
                     <div class="clock-label">Clock</div>
                 </div>
-                <div class="nav-links" style="display: flex; flex-direction: column; gap: 10px; flex-grow: 1;">
+                <div class="nav-links" style="display: flex; flex-direction: column; gap: 12px; flex-grow: 1;">
                     <a href="https://t.me/jurabek1608" class="btn">Telegram</a>
                     <a href="https://discordapp.com/users/1035880231619280926" class="btn">Discord</a>
                     <a href="https://steamcommunity.com/profiles/76561199554598143" class="btn">Steam</a>
@@ -158,24 +174,24 @@
         const clockBtn = document.getElementById('clock-trigger');
         const clockElement = document.getElementById('real-time-clock');
 
-        // Toggle Socials + Depth Effect
+        // Toggle Socials Panel
         toggleBtn.addEventListener('click', () => {
             container.classList.toggle('is-open');
-            toggleBtn.classList.toggle('active'); // Stays pressed
+            toggleBtn.classList.toggle('active');
             toggleBtn.textContent = container.classList.contains('is-open') ? "Close" : "More socials";
         });
 
-        // Toggle Clock + Depth Effect
+        // Toggle Clock Panel
         clockBtn.addEventListener('click', () => {
             container.classList.toggle('show-clock');
-            clockBtn.classList.toggle('active'); // Stays pressed
+            clockBtn.classList.toggle('active');
         });
 
-        // Parallax (Only movement, NO ROTATION)
+        // Mouse Parallax (Movement Only)
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
-            bg.style.transform = `scale(1.1) translate(${x * -15}px, ${y * -15}px)`;
+            bg.style.transform = `scale(1.1) translate(${x * -20}px, ${y * -20}px)`;
         });
         
         function updateClock() {
@@ -191,7 +207,7 @@
             const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            const cs = 85; 
+            const cs = 90; 
             if ((x < cs || x > rect.width - cs) && (y < cs || y > rect.height - cs)) {
                 container.style.left = (x < cs ? -150 : 150) + "px";
                 container.style.top = (y < cs ? -150 : 150) + "px";
