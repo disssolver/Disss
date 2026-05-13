@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio | Pro Interactive 3D Fix</title>
+    <title>Bio | Pro Elite 3D Fix</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -19,7 +19,7 @@
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
             z-index: -1; object-fit: cover;
-            filter: brightness(0.45) blur(2px);
+            filter: brightness(0.4) blur(2px);
             transform: scale(1.1);
             transition: transform 0.8s cubic-bezier(0.2, 0, 0.2, 1);
         }
@@ -40,108 +40,77 @@
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* CLOCK (TOP) */
+        /* CLOCK PANEL (TOP) */
         .real-time-clock {
             position: absolute;
-            top: 20px; 
-            left: 50%;
-            transform: translateX(-50%) translateZ(-20px);
-            font-size: 32px;
-            font-weight: 900;
-            color: #fff;
-            letter-spacing: 5px;
+            top: 20px; left: 50%;
+            transform: translateX(-50%) translateZ(-30px);
+            font-size: 32px; font-weight: 900;
+            color: #fff; letter-spacing: 5px;
             transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 5;
-            opacity: 0;
+            z-index: 1; opacity: 0;
             pointer-events: none;
         }
 
         /* MAIN CARD */
         .card-main {
-            position: relative; 
-            z-index: 100; /* Always on top of panels */
-            padding: 35px; 
-            border-radius: 40px;
-            transform-origin: center center;
+            position: relative;
+            z-index: 100; 
+            padding: 35px; border-radius: 40px;
+            box-shadow: none;
         }
 
         /* CLOCK TRIGGER UI */
-        .avatar-container { display: flex; flex-direction: column; align-items: center; }
+        .avatar-container { 
+            display: flex; flex-direction: column; align-items: center; 
+            cursor: pointer; z-index: 110;
+        }
         .mini-circle-btn {
             width: 22px; height: 22px;
-            background: #fff;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            margin: 12px auto 4px;
-            cursor: pointer;
-            transition: 0.4s;
+            background: #fff; border: 2px solid #fff;
+            border-radius: 50%; margin: 12px auto 4px;
+            transition: 0.4s ease;
         }
-        
-        .panel-container.show-clock .mini-circle-btn {
-            background: #000;
-        }
-
         .clock-label {
-            font-size: 10px;
-            font-weight: 900;
-            text-transform: uppercase;
+            font-size: 10px; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 1px;
             color: rgba(255, 255, 255, 0.7);
         }
 
-        /* SOCIAL PANEL (BOTTOM) */
+        /* SOCIAL PANEL (BOTTOM) - BEHIND MAIN */
         .card-extra {
             position: absolute;
-            bottom: 10px; 
-            z-index: 50; /* Behind main card */
-            height: 140px;
-            border-radius: 35px;
+            bottom: 10px; z-index: 10;
+            height: 140px; border-radius: 35px;
             display: flex; justify-content: space-around; align-items: center;
-            padding: 0 25px;
-            opacity: 0;
+            padding: 0 25px; opacity: 0;
             pointer-events: none;
-            transform: translateZ(-20px);
+            transform: translateZ(-30px);
         }
 
-        /* ANIMATION LOGIC */
-        
-        /* 1. When Clock opens: Top of card tilts BACK (positive rotateX) */
+        /* ANIMATION STATES */
         .panel-container.show-clock .real-time-clock { top: -75px; opacity: 1; }
         .panel-container.show-clock .card-main { transform: rotateX(15deg); }
+        .panel-container.show-clock .mini-circle-btn { background: #000; }
 
-        /* 2. When Socials open: Bottom of card tilts BACK (negative rotateX) */
-        .panel-container.is-open .card-extra {
-            bottom: -155px; 
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .panel-container.is-open .card-main { 
-            transform: rotateX(-15deg); 
-        }
-
-        /* 3. If both are open, keep it flat but slightly forward */
-        .panel-container.is-open.show-clock .card-main {
-            transform: rotateX(0deg) translateZ(10px);
-        }
+        .panel-container.is-open .card-extra { bottom: -155px; opacity: 1; pointer-events: auto; }
+        .panel-container.is-open .card-main { transform: rotateX(-15deg); }
 
         /* BUTTONS */
         .btn {
-            text-decoration: none; 
-            color: #000;
-            background: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            text-decoration: none; color: #000;
+            background: #fff; border: none;
             padding: 12px; border-radius: 16px;
             font-size: 13px; font-weight: 900; 
             text-transform: uppercase; text-align: center;
-            transition: 0.4s;
-            cursor: pointer;
+            transition: 0.4s ease; cursor: pointer;
             display: block; width: 100%;
-            position: relative;
-            z-index: 110; /* Ensures buttons are always clickable */
+            position: relative; z-index: 200; /* Highest priority for clicking */
         }
 
         .panel-container.is-open #toggle-more {
-            background: #000;
-            color: #fff;
+            background: #000; color: #fff;
+            border: 1px solid #555;
         }
 
         .profile-top { display: flex; align-items: center; gap: 25px; margin-bottom: 20px; }
@@ -154,7 +123,7 @@
             border-radius: 25px;
             display: flex; justify-content: center; align-items: center;
             text-decoration: none; color: black; font-weight: 900;
-            transition: 0.3s;
+            transition: 0.3s ease;
         }
         .social-icon:hover { background: #fff; transform: scale(1.1); }
     </style>
@@ -169,9 +138,9 @@
 
         <div class="glass-base card-main" id="card-main">
             <div class="profile-top">
-                <div class="avatar-container">
+                <div class="avatar-container" id="clock-trigger">
                     <img src="ava.jpg" alt="Avatar" class="avatar">
-                    <div class="mini-circle-btn" id="clock-trigger"></div>
+                    <div class="mini-circle-btn"></div>
                     <div class="clock-label">Clock</div>
                 </div>
                 <div class="nav-links" style="display: flex; flex-direction: column; gap: 10px; flex-grow: 1;">
@@ -180,7 +149,7 @@
                     <a href="https://steamcommunity.com/profiles/76561199554598143" class="btn">Steam</a>
                 </div>
             </div>
-            <div class="btn" id="toggle-more">More socials</div>
+            <button class="btn" id="toggle-more">More socials</button>
         </div>
 
         <div class="glass-base card-extra" id="card-extra">
@@ -198,6 +167,7 @@
         const clockBtn = document.getElementById('clock-trigger');
         const clockElement = document.getElementById('real-time-clock');
 
+        // 3D Mouse Parallax
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
@@ -205,19 +175,21 @@
             bg.style.transform = `scale(1.1) translate(${x * -15}px, ${y * -15}px)`;
         });
 
-        // Toggle Socials Panel
+        // Fixed Toggle Logic
         toggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
             container.classList.toggle('is-open');
             toggleBtn.textContent = container.classList.contains('is-open') ? "Close" : "More socials";
         });
 
-        // Toggle Clock Panel
+        // Clock Toggle
         clockBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             container.classList.toggle('show-clock');
         });
         
+        // Time Update
         function updateClock() {
             const now = new Date();
             clockElement.textContent = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
@@ -225,9 +197,9 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // Corner Teleport logic
+        // Corner Teleport
         document.getElementById('card-main').addEventListener('click', (e) => {
-            if (e.target.closest('.btn') || e.target.closest('.mini-circle-btn')) return;
+            if (e.target.closest('.btn') || e.target.closest('#clock-trigger')) return;
             const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
