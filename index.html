@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disss | Pro Elite Bio</title>
+    <title>Bio | Pro Interactive</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -31,7 +31,6 @@
             gap: 10px;
             transform-style: preserve-3d;
             transition: transform 0.1s ease-out, top 0.8s cubic-bezier(0.4, 0, 0.2, 1), left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            left: 0; top: 0;
         }
 
         .glass-base {
@@ -39,53 +38,57 @@
             backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             border: 1px solid rgba(255, 255, 255, 0.45);
             width: 440px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            box-shadow: none; /* Removed shadows as requested */
             transform-style: preserve-3d;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* Плавное открытие */
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* ЧАСЫ: БОЛЬШЕ И ПРАВИЛЬНАЯ ТЕНЬ */
+        /* CLOCK STYLE */
         .real-time-clock {
             position: absolute;
-            top: -20px; /* Торчат наполовину */
+            top: 20px; 
             left: 50%;
-            transform: translateX(-50%) translateZ(-1px);
-            font-size: 32px; /* Крупнее */
+            transform: translateX(-50%) translateZ(-10px);
+            font-size: 32px;
             font-weight: 900;
-            color: rgba(255, 255, 255, 0.85);
+            color: #fff;
             letter-spacing: 5px;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 5;
+            opacity: 0;
             pointer-events: none;
-        }
-
-        /* Мягкая тень под часами на стыке с табличкой */
-        .clock-edge-shadow {
-            position: absolute;
-            top: 0; left: 50%;
-            transform: translateX(-50%);
-            width: 150px; height: 20px;
-            background: transparent;
-            box-shadow: 0 -12px 20px rgba(0, 0, 0, 0.5); /* Мягкая тень */
-            z-index: 25;
-            pointer-events: none;
-            transition: opacity 0.6s ease;
         }
 
         .card-main {
             position: relative; z-index: 20;
             padding: 35px; border-radius: 40px;
         }
-        
-        /* При наведении часы выезжают полностью */
-        .panel-container:hover .real-time-clock {
-            top: -60px;
-            color: #fff;
+
+        /* MINI ROUND BUTTON UNDER AVATAR */
+        .mini-circle-btn {
+            width: 20px; height: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            margin: 12px auto 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .panel-container:hover .clock-edge-shadow {
-            opacity: 0;
+        .mini-circle-btn:hover { 
+            background: #fff; 
+            transform: scale(1.2); 
         }
 
+        /* CLOCK REVEAL ANIMATION */
+        .panel-container.show-clock .real-time-clock {
+            top: -65px;
+            opacity: 1;
+        }
+        .panel-container.show-clock .card-main {
+            transform: rotateX(15deg); /* Tilt effect for clock visibility */
+        }
+
+        /* SECOND PANEL */
         .card-extra {
             position: absolute;
             top: 10%; z-index: 10;
@@ -98,11 +101,10 @@
             transform: translateY(-30px) scale(0.9) translateZ(-30px);
         }
 
-        /* СОСТОЯНИЕ ОТКРЫТИЯ */
+        /* SECOND PANEL OPEN STATE */
         .panel-container.is-open .card-main {
-            transform: translateY(-50px);
+            transform: translateY(-50px) rotateX(0deg); 
         }
-
         .panel-container.is-open .card-extra {
             position: relative;
             transform: translateY(0) scale(1) translateZ(0);
@@ -112,27 +114,25 @@
 
         .profile-top { display: flex; align-items: center; gap: 25px; transform-style: preserve-3d; margin-bottom: 20px; }
         
+        .avatar-container { display: flex; flex-direction: column; align-items: center; }
         .avatar {
             width: 115px; height: 115px; border-radius: 30px;
             object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.6);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
+            transition: all 0.4s ease;
         }
-        .avatar:hover { transform: translateY(-15px) scale(1.15) translateZ(20px); }
 
         .btn {
             text-decoration: none; 
-            color: rgba(0, 0, 0, 0.85); /* Темный текст */
-            background: rgba(255, 255, 255, 0.55); /* Светлые кнопки */
+            color: rgba(0, 0, 0, 0.85);
+            background: rgba(255, 255, 255, 0.55);
             border: 1px solid rgba(255, 255, 255, 0.4);
             padding: 12px; border-radius: 16px;
             font-size: 13px; font-weight: 900; 
             text-transform: uppercase; text-align: center;
-            transition: all 0.2s ease; transform-style: preserve-3d;
+            transition: all 0.2s ease;
             cursor: pointer;
         }
-        .btn:hover { background: rgba(255, 255, 255, 0.75); transform: translateZ(20px); }
-        .btn:active { transform: translateZ(-25px) scale(0.9); }
+        .btn:hover { background: rgba(255, 255, 255, 0.8); }
 
         .social-icon {
             width: 85px; height: 85px;
@@ -144,26 +144,26 @@
             text-decoration: none; color: black; font-weight: 900; font-size: 16px;
         }
         .social-icon:hover {
-            background: rgba(255, 255, 255, 0.8);
-            transform: translateY(-10px) scale(1.1) translateZ(15px);
-            border-color: #fff;
+            background: rgba(255, 255, 255, 0.7);
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
 
-    <img src="bg.jpg" id="bg-parallax" alt="background">
+    <img src="bg.jpg" id="bg-parallax" alt="Background">
 
     <div class="panel-container" id="panel-container">
         
         <div class="real-time-clock" id="real-time-clock">00:00</div>
 
         <div class="glass-base card-main" id="card-main">
-            <div class="clock-edge-shadow"></div>
-            
             <div class="profile-top">
-                <img src="ava.jpg" alt="Avatar" class="avatar">
-                <div class="nav-links" style="display: flex; flex-direction: column; gap: 10px; flex-grow: 1; transform-style: preserve-3d;">
+                <div class="avatar-container">
+                    <img src="ava.jpg" alt="Avatar" class="avatar">
+                    <div class="mini-circle-btn" id="clock-trigger"></div>
+                </div>
+                <div class="nav-links" style="display: flex; flex-direction: column; gap: 10px; flex-grow: 1;">
                     <a href="https://t.me/jurabek1608" class="btn">Telegram</a>
                     <a href="https://discordapp.com/users/1035880231619280926" class="btn">Discord</a>
                     <a href="https://steamcommunity.com/profiles/76561199554598143" class="btn">Steam</a>
@@ -184,9 +184,10 @@
         const container = document.getElementById('panel-container');
         const bg = document.getElementById('bg-parallax');
         const toggleBtn = document.getElementById('toggle-more');
+        const clockBtn = document.getElementById('clock-trigger');
         const clockElement = document.getElementById('real-time-clock');
 
-        // СЛЕЖКА МЫШИ
+        // Mouse movement parallax
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
@@ -194,54 +195,47 @@
             bg.style.transform = `scale(1.1) translate(${x * -15}px, ${y * -15}px)`;
         });
 
-        // ПЛАВНОЕ ОТКРЫТИЕ
+        // Toggle social panel
         toggleBtn.addEventListener('click', () => {
             container.classList.toggle('is-open');
             toggleBtn.textContent = container.classList.contains('is-open') ? "Close" : "More socials";
         });
+
+        // Toggle clock and tilt
+        clockBtn.addEventListener('click', () => {
+            container.classList.toggle('show-clock');
+        });
         
-        // ЧАСЫ
+        // Update real time clock
         function updateClock() {
             const now = new Date();
-            let h = now.getHours().toString().padStart(2, '0');
-            let m = now.getMinutes().toString().padStart(2, '0');
+            const h = now.getHours().toString().padStart(2, '0');
+            const m = now.getMinutes().toString().padStart(2, '0');
             clockElement.textContent = `${h}:${m}`;
         }
         updateClock();
         setInterval(updateClock, 1000);
 
-        // ТЕЛЕПОРТ (ТОЛЬКО ПО УГЛАМ)
+        // Corner teleport only
         document.getElementById('card-main').addEventListener('click', (e) => {
-            if (e.target.closest('.btn')) return;
-            
+            if (e.target.closest('.btn') || e.target.closest('.mini-circle-btn')) return;
             const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
-            const cornerSize = 80; // Размер области угла
+            const cornerSize = 85; 
 
             const isLeft = x < cornerSize;
             const isRight = x > rect.width - cornerSize;
             const isTop = y < cornerSize;
             const isBottom = y > rect.height - cornerSize;
 
-            // Срабатывает только если нажатие в одном из 4-х углов
             if ((isLeft || isRight) && (isTop || isBottom)) {
-                let targetX = isLeft ? -150 : 150;
-                let targetY = isTop ? -150 : 150;
-                
-                container.style.left = `${targetX}px`;
-                container.style.top = `${targetY}px`;
+                container.style.left = (isLeft ? -150 : 150) + "px";
+                container.style.top = (isTop ? -150 : 150) + "px";
             } else {
-                // Если клик не в угол, возвращаем в центр
-                container.style.left = "0px";
+                container.style.left = "0px"; 
                 container.style.top = "0px";
             }
-        });
-
-        document.addEventListener('mouseleave', () => {
-            container.style.transform = `rotateX(0deg) rotateY(0deg)`;
-            bg.style.transform = `scale(1.1) translate(0, 0)`;
         });
     </script>
 </body>
