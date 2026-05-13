@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disss | Elite Dual Panel</title>
+    <title>Disss | Pro Elite Bio</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -21,56 +21,55 @@
             z-index: -1; object-fit: cover;
             filter: brightness(0.45) blur(2px);
             transform: scale(1.1);
-            transition: transform 0.6s cubic-bezier(0.2, 0, 0.2, 1);
+            transition: transform 0.8s cubic-bezier(0.2, 0, 0.2, 1);
             will-change: transform;
         }
 
         .panel-container {
             position: relative;
             display: flex; flex-direction: column; align-items: center;
-            gap: 8px;
+            gap: 10px;
             transform-style: preserve-3d;
             transition: transform 0.1s ease-out, top 0.8s cubic-bezier(0.4, 0, 0.2, 1), left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            left: 0; top: 0;
         }
 
         .glass-base {
             background: rgba(140, 140, 140, 0.75);
             backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             border: 1px solid rgba(255, 255, 255, 0.45);
-            width: 420px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            width: 440px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
             transform-style: preserve-3d;
-            transition: all 0.9s cubic-bezier(0.34, 1.3, 0.64, 1);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* Плавное открытие */
         }
 
-        /* CLOCK: STICKS OUT HALFWAY */
+        /* ЧАСЫ: БОЛЬШЕ И ПРАВИЛЬНАЯ ТЕНЬ */
         .real-time-clock {
             position: absolute;
-            top: -15px; /* Positioned to peak out halfway */
+            top: -20px; /* Торчат наполовину */
             left: 50%;
             transform: translateX(-50%) translateZ(-1px);
-            font-size: 24px; font-weight: 900;
-            color: rgba(255, 255, 255, 0.9);
-            letter-spacing: 3px;
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            font-size: 32px; /* Крупнее */
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.85);
+            letter-spacing: 5px;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 5;
             pointer-events: none;
-            /* Shadow only at the bottom where it touches the card */
-            mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
         }
-        
-        /* THE SHADOW UNDERNEATH THE CLOCK (on the card edge) */
-        .clock-shadow {
+
+        /* Мягкая тень под часами на стыке с табличкой */
+        .clock-edge-shadow {
             position: absolute;
             top: 0; left: 50%;
             transform: translateX(-50%);
-            width: 120px; height: 15px;
+            width: 150px; height: 20px;
             background: transparent;
-            box-shadow: 0 -10px 15px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 -12px 20px rgba(0, 0, 0, 0.5); /* Мягкая тень */
             z-index: 25;
             pointer-events: none;
-            transition: all 0.5s ease;
+            transition: opacity 0.6s ease;
         }
 
         .card-main {
@@ -78,30 +77,30 @@
             padding: 35px; border-radius: 40px;
         }
         
-        /* Hover: Clock rises fully, Shadow disappears */
+        /* При наведении часы выезжают полностью */
         .panel-container:hover .real-time-clock {
-            top: -45px;
-            mask-image: none;
-            -webkit-mask-image: none;
+            top: -60px;
+            color: #fff;
         }
-        .panel-container:hover .clock-shadow {
+        .panel-container:hover .clock-edge-shadow {
             opacity: 0;
         }
 
         .card-extra {
             position: absolute;
-            top: 20%; z-index: 10;
+            top: 10%; z-index: 10;
             height: 140px;
             border-radius: 35px;
             display: flex; justify-content: space-around; align-items: center;
             padding: 0 25px;
             opacity: 0;
             pointer-events: none;
-            transform: translateY(-20px) scale(0.95) translateZ(-20px);
+            transform: translateY(-30px) scale(0.9) translateZ(-30px);
         }
 
+        /* СОСТОЯНИЕ ОТКРЫТИЯ */
         .panel-container.is-open .card-main {
-            transform: translateY(-40px);
+            transform: translateY(-50px);
         }
 
         .panel-container.is-open .card-extra {
@@ -113,28 +112,27 @@
 
         .profile-top { display: flex; align-items: center; gap: 25px; transform-style: preserve-3d; margin-bottom: 20px; }
         
-        .ava-box { position: relative; transform-style: preserve-3d; }
         .avatar {
-            width: 110px; height: 110px; border-radius: 30px;
+            width: 115px; height: 115px; border-radius: 30px;
             object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.6);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer; position: relative; z-index: 2;
+            cursor: pointer;
         }
         .avatar:hover { transform: translateY(-15px) scale(1.15) translateZ(20px); }
 
         .btn {
             text-decoration: none; 
-            color: rgba(0, 0, 0, 0.85); /* Dark text */
-            background: rgba(255, 255, 255, 0.5); /* Bright button */
+            color: rgba(0, 0, 0, 0.85); /* Темный текст */
+            background: rgba(255, 255, 255, 0.55); /* Светлые кнопки */
             border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 12px; border-radius: 15px;
+            padding: 12px; border-radius: 16px;
             font-size: 13px; font-weight: 900; 
             text-transform: uppercase; text-align: center;
             transition: all 0.2s ease; transform-style: preserve-3d;
             cursor: pointer;
         }
-        .btn:hover { background: rgba(255, 255, 255, 0.7); transform: translateZ(25px); }
-        .btn:active { transform: translateZ(-30px) scale(0.85); }
+        .btn:hover { background: rgba(255, 255, 255, 0.75); transform: translateZ(20px); }
+        .btn:active { transform: translateZ(-25px) scale(0.9); }
 
         .social-icon {
             width: 85px; height: 85px;
@@ -143,10 +141,10 @@
             border-radius: 25px;
             display: flex; justify-content: center; align-items: center;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-decoration: none; color: black; font-weight: 900; font-size: 15px;
+            text-decoration: none; color: black; font-weight: 900; font-size: 16px;
         }
         .social-icon:hover {
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.8);
             transform: translateY(-10px) scale(1.1) translateZ(15px);
             border-color: #fff;
         }
@@ -161,13 +159,11 @@
         <div class="real-time-clock" id="real-time-clock">00:00</div>
 
         <div class="glass-base card-main" id="card-main">
-            <div class="clock-shadow"></div>
+            <div class="clock-edge-shadow"></div>
             
             <div class="profile-top">
-                <div class="ava-box">
-                    <img src="ava.jpg" alt="Avatar" class="avatar">
-                </div>
-                <div class="nav-links">
+                <img src="ava.jpg" alt="Avatar" class="avatar">
+                <div class="nav-links" style="display: flex; flex-direction: column; gap: 10px; flex-grow: 1; transform-style: preserve-3d;">
                     <a href="https://t.me/jurabek1608" class="btn">Telegram</a>
                     <a href="https://discordapp.com/users/1035880231619280926" class="btn">Discord</a>
                     <a href="https://steamcommunity.com/profiles/76561199554598143" class="btn">Steam</a>
@@ -190,6 +186,7 @@
         const toggleBtn = document.getElementById('toggle-more');
         const clockElement = document.getElementById('real-time-clock');
 
+        // СЛЕЖКА МЫШИ
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
@@ -197,32 +194,49 @@
             bg.style.transform = `scale(1.1) translate(${x * -15}px, ${y * -15}px)`;
         });
 
+        // ПЛАВНОЕ ОТКРЫТИЕ
         toggleBtn.addEventListener('click', () => {
             container.classList.toggle('is-open');
             toggleBtn.textContent = container.classList.contains('is-open') ? "Close" : "More socials";
         });
         
+        // ЧАСЫ
         function updateClock() {
             const now = new Date();
             let h = now.getHours().toString().padStart(2, '0');
             let m = now.getMinutes().toString().padStart(2, '0');
-            clockElement.textContent = h + ':' + m;
+            clockElement.textContent = `${h}:${m}`;
         }
         updateClock();
         setInterval(updateClock, 1000);
 
+        // ТЕЛЕПОРТ (ТОЛЬКО ПО УГЛАМ)
         document.getElementById('card-main').addEventListener('click', (e) => {
             if (e.target.closest('.btn')) return;
+            
             const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            const cz = 100;
+            
+            const cornerSize = 80; // Размер области угла
 
-            if (x < cz && y < cz) { container.style.left = "-150px"; container.style.top = "-150px"; }
-            else if (x > rect.width-cz && y < cz) { container.style.left = "150px"; container.style.top = "-150px"; }
-            else if (x < cz && y > rect.height-cz) { container.style.left = "-150px"; container.style.top = "150px"; }
-            else if (x > rect.width-cz && y > rect.height-cz) { container.style.left = "150px"; container.style.top = "150px"; }
-            else { container.style.left = "0"; container.style.top = "0"; }
+            const isLeft = x < cornerSize;
+            const isRight = x > rect.width - cornerSize;
+            const isTop = y < cornerSize;
+            const isBottom = y > rect.height - cornerSize;
+
+            // Срабатывает только если нажатие в одном из 4-х углов
+            if ((isLeft || isRight) && (isTop || isBottom)) {
+                let targetX = isLeft ? -150 : 150;
+                let targetY = isTop ? -150 : 150;
+                
+                container.style.left = `${targetX}px`;
+                container.style.top = `${targetY}px`;
+            } else {
+                // Если клик не в угол, возвращаем в центр
+                container.style.left = "0px";
+                container.style.top = "0px";
+            }
         });
 
         document.addEventListener('mouseleave', () => {
