@@ -8,44 +8,41 @@
         body, html {
             margin: 0; padding: 0; height: 100vh;
             display: flex; justify-content: center; align-items: center;
-            background: #000; color: white;
+            background: #000; /* Deep black for safety */
+            color: white;
             font-family: 'Segoe UI', sans-serif;
             overflow: hidden;
-            perspective: 2000px;
-            /* Global soft blur */
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
+            perspective: 1500px;
         }
 
-        /* FIX: Full screen background without black bars */
+        /* FIXED BACKGROUND - NO MOVEMENT TO PREVENT BLACK STRIPES */
         .background {
             position: fixed;
-            top: -10%; left: -10%;
-            width: 120%; height: 120%;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
             background-image: url('./bg.jpg');
             background-repeat: no-repeat;
             background-position: center;
-            background-size: cover;
+            background-size: cover; /* Forces image to fill entire screen */
             z-index: -2;
-            filter: brightness(0.4);
-            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            will-change: transform;
+            filter: brightness(0.4) blur(2px); /* 2px blur integrated here */
         }
 
-        /* FIX: Darker card background, bright content */
+        /* DARKER CARD */
         .card {
             display: flex;
             flex-direction: column;
             gap: 25px;
             padding: 35px;
             min-width: 380px;
-            background: rgba(0, 0, 0, 0.7); /* DARKER TABLE */
-            backdrop-filter: blur(30px) saturate(150%);
-            -webkit-backdrop-filter: blur(30px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.8); /* Solid dark glass */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 40px;
-            box-shadow: 0 0 40px rgba(255, 255, 255, 0.05);
-            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s ease-out;
+            will-change: transform;
         }
 
         .profile-top {
@@ -54,59 +51,49 @@
             gap: 25px;
         }
 
-        /* Avatar Lift */
         .avatar {
             width: 130px; height: 130px;
             border-radius: 35px;
             object-fit: cover;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            cursor: pointer;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .avatar:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+            transform: translateY(-10px) scale(1.05);
         }
 
         .nav-links {
             display: flex; flex-direction: column; gap: 12px; flex-grow: 1;
         }
 
-        /* Buttons: Lift effect and local glow */
+        /* BUTTONS WITH LOCAL GLOW */
         .btn {
             text-decoration: none; color: white;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.07);
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 12px; border-radius: 16px;
-            font-size: 14px; font-weight: 700;
+            font-size: 13px; font-weight: 700;
             text-transform: uppercase; text-align: center;
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: all 0.3s ease;
         }
         .btn:hover {
             background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-5px);
-            border-color: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1); /* LOCAL GLOW */
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+            text-shadow: 0 0 8px #fff;
         }
 
-        /* Bright text DISSS */
         .nickname {
             margin: 0; text-align: center;
-            font-size: 42px; font-weight: 900;
-            letter-spacing: 8px; text-transform: uppercase;
+            font-size: 40px; font-weight: 900;
+            letter-spacing: 10px; text-transform: uppercase;
             color: #fff;
-            transition: all 0.5s ease;
-            cursor: default;
-        }
-        .nickname:hover {
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
         }
     </style>
 </head>
 <body>
 
-    <div class="background" id="bg"></div>
+    <div class="background"></div>
 
     <div class="card" id="card">
         <div class="profile-top">
@@ -121,18 +108,14 @@
     </div>
 
     <script>
-        const bg = document.getElementById('bg');
         const card = document.getElementById('card');
 
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
 
-            // Background parallax
-            bg.style.transform = `translate(${x * 60}px, ${y * 60}px)`;
-
-            // Card tilt
-            card.style.transform = `rotateX(${y * -12}deg) rotateY(${x * 12}deg)`;
+            // Only Tilt the card, don't touch the background
+            card.style.transform = `rotateX(${y * -15}deg) rotateY(${x * 15}deg)`;
         });
     </script>
 </body>
