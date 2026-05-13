@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disss | Multi-Panel Bio</title>
+    <title>Disss | Dual Panel Bio</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -12,71 +12,71 @@
             display: flex; justify-content: center; align-items: center;
             background: #000; color: white;
             font-family: 'Segoe UI', sans-serif;
-            overflow: hidden; perspective: 2000px;
+            overflow: hidden; perspective: 2500px;
         }
 
         #bg-parallax {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
             z-index: -1; object-fit: cover;
-            filter: brightness(0.4) blur(2px);
+            filter: brightness(0.45) blur(2px);
             transform: scale(1.1);
             transition: transform 0.4s ease-out;
             will-change: transform;
         }
 
-        .container-3d {
+        /* WRAPPER FOR BOTH CARDS */
+        .panel-container {
             position: relative;
+            display: flex; flex-direction: column; align-items: center;
+            gap: 15px; /* Gap between top and bottom card when open */
             transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.1s ease-out, top 0.6s ease, left 0.6s ease;
         }
 
-        /* MAIN CARD */
-        .card {
-            position: relative; z-index: 20;
-            display: flex; flex-direction: column; gap: 20px;
-            padding: 35px; min-width: 420px;
-            background: rgba(130, 130, 130, 0.8); 
+        /* SHARED GLASS STYLE */
+        .glass-base {
+            background: rgba(140, 140, 140, 0.75);
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 40px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-            transition: transform 0.1s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            width: 420px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
             transform-style: preserve-3d;
+            transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* SUB PANEL (EXTRA SOCIALS) */
-        .sub-panel {
+        /* TOP MAIN CARD */
+        .card-main {
+            position: relative; z-index: 20;
+            padding: 35px; border-radius: 40px;
+        }
+
+        /* BOTTOM EXTRA CARD */
+        .card-extra {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%;
+            top: 0; z-index: 10;
             height: 120px;
-            z-index: 10;
-            background: rgba(100, 100, 100, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 0 0 40px 40px;
+            border-radius: 40px;
             display: flex; justify-content: space-around; align-items: center;
             padding: 0 30px;
-            /* Hidden state */
-            transform: translateY(-50px);
             opacity: 0;
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
+            transform: translateZ(-10px);
         }
 
-        /* Animation class when active */
-        .container-3d.active .sub-panel {
-            transform: translateY(100%);
+        /* ANIMATION STATE: OPEN */
+        .panel-container.is-open .card-main {
+            transform: translateY(-65px);
+        }
+
+        .panel-container.is-open .card-extra {
+            position: relative; /* Returns to flex flow */
+            transform: translateY(0) translateZ(0);
             opacity: 1;
             pointer-events: auto;
         }
 
-        .container-3d.active .card {
-            transform: rotateX(10deg); /* Tilt effect when opening */
-        }
-
-        .profile-top { display: flex; align-items: center; gap: 25px; transform-style: preserve-3d; }
+        .profile-top { display: flex; align-items: center; gap: 25px; transform-style: preserve-3d; margin-bottom: 20px; }
         
         /* AVATAR STYLE */
         .ava-box { position: relative; transform-style: preserve-3d; }
@@ -90,43 +90,42 @@
             position: absolute; bottom: 0; left: 50%;
             transform: translateX(-50%) translateZ(-1px);
             width: 80%; height: 30%; background: rgba(255, 255, 255, 0);
-            filter: blur(15px); transition: 0.4s ease;
+            filter: blur(20px); transition: 0.4s ease;
         }
-        .avatar:hover { transform: translateY(-15px) scale(1.15) translateZ(10px); }
-        .avatar:hover + .ava-glow { background: rgba(255, 255, 255, 0.7); bottom: -10px; }
+        .avatar:hover { transform: translateY(-15px) scale(1.15) translateZ(20px); }
+        .avatar:hover + .ava-glow { background: rgba(255, 255, 255, 0.8); bottom: -10px; }
 
         .nav-links { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; transform-style: preserve-3d; }
 
         /* BRIGHT BUTTONS WITH DARK TEXT */
         .btn {
             text-decoration: none; 
-            color: rgba(0, 0, 0, 0.85); /* Dark text as requested */
-            background: rgba(255, 255, 255, 0.4); /* Brighter button */
+            color: rgba(0, 0, 0, 0.8); /* Dark text requested */
+            background: rgba(255, 255, 255, 0.4); /* Bright button */
             border: 1px solid rgba(255, 255, 255, 0.4);
             padding: 12px; border-radius: 15px;
             font-size: 13px; font-weight: 900; 
             text-transform: uppercase; text-align: center;
             transition: all 0.2s ease; transform-style: preserve-3d;
-        }
-        .btn:hover { background: rgba(255, 255, 255, 0.6); transform: translateZ(15px); }
-        .btn:active { transform: translateZ(-25px) scale(0.9); }
-
-        /* SOCIAL ICONS (4 slots) */
-        .social-icon {
-            width: 60px; height: 60px;
-            background: rgba(255, 255, 255, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 18px;
-            display: flex; justify-content: center; align-items: center;
-            transition: all 0.3s ease;
             cursor: pointer;
-            text-decoration: none;
-            color: black; font-weight: bold; font-size: 10px;
+        }
+        .btn:hover { background: rgba(255, 255, 255, 0.6); transform: translateZ(25px); }
+        .btn:active { transform: translateZ(-30px) scale(0.9); }
+
+        /* SQUARE SOCIAL ICONS */
+        .social-icon {
+            width: 65px; height: 65px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            display: flex; justify-content: center; align-items: center;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none; color: black; font-weight: 900; font-size: 11px;
         }
         .social-icon:hover {
             background: rgba(255, 255, 255, 0.6);
-            transform: translateY(-10px) scale(1.1);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transform: translateY(-10px) scale(1.1) translateZ(15px);
+            border-color: #fff;
         }
     </style>
 </head>
@@ -134,8 +133,8 @@
 
     <img src="bg.jpg" id="bg-parallax" alt="background">
 
-    <div class="container-3d" id="main-container">
-        <div class="card" id="card">
+    <div class="panel-container" id="panel-container">
+        <div class="glass-base card-main" id="card-main">
             <div class="profile-top">
                 <div class="ava-box">
                     <img src="ava.jpg" alt="Avatar" class="avatar">
@@ -147,50 +146,42 @@
                     <a href="https://steamcommunity.com/profiles/76561199554598143" class="btn">Steam</a>
                 </div>
             </div>
-            <button class="btn" id="toggle-btn" style="cursor: pointer; width: 100%;">More socials</button>
+            <div class="btn" id="toggle-more">More socials</div>
         </div>
 
-        <div class="sub-panel">
+        <div class="glass-base card-extra" id="card-extra">
             <a href="#" class="social-icon">INST</a>
             <a href="#" class="social-icon">TT</a>
-            <a href="#" class="social-icon">SND</a>
+            <a href="#" class="social-icon">SC</a>
             <a href="#" class="social-icon">CLUB</a>
         </div>
     </div>
 
     <script>
-        const container = document.getElementById('main-container');
-        const card = document.getElementById('card');
+        const container = document.getElementById('panel-container');
         const bg = document.getElementById('bg-parallax');
-        const toggleBtn = document.getElementById('toggle-btn');
+        const toggleBtn = document.getElementById('toggle-more');
 
         // MOUSE TRACKING
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
             
-            // Tilt the whole container
             container.style.transform = `rotateX(${y * -20}deg) rotateY(${x * 20}deg)`;
-            bg.style.transform = `scale(1.1) translate(${x * -15}px, ${y * -15}px)`;
+            bg.style.transform = `scale(1.1) translate(${x * -20}px, ${y * -20}px)`;
         });
 
-        // TOGGLE SUB-PANEL
+        // ANIMATION TOGGLE
         toggleBtn.addEventListener('click', () => {
-            container.classList.toggle('active');
-            toggleBtn.textContent = container.classList.contains('active') ? "Close" : "More socials";
+            container.classList.toggle('is-open');
+            toggleBtn.textContent = container.classList.contains('is-open') ? "Close" : "More socials";
         });
 
-        // RESET
-        document.addEventListener('mouseleave', () => {
-            container.style.transform = `rotateX(0deg) rotateY(0deg)`;
-            bg.style.transform = `scale(1.1) translate(0, 0)`;
-        });
+        // EDGE TELEPORT (CORNER CLICK)
+        document.getElementById('card-main').addEventListener('click', (e) => {
+            if (e.target.closest('.btn')) return;
 
-        // CORNER CLICK TELEPORT (relative to card edges)
-        card.addEventListener('click', (e) => {
-            if(e.target.closest('.btn')) return; // ignore buttons
-            
-            const rect = card.getBoundingClientRect();
+            const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             const cz = 100;
@@ -200,6 +191,11 @@
             else if (x < cz && y > rect.height-cz) { container.style.left = "-150px"; container.style.top = "150px"; }
             else if (x > rect.width-cz && y > rect.height-cz) { container.style.left = "150px"; container.style.top = "150px"; }
             else { container.style.left = "0"; container.style.top = "0"; }
+        });
+
+        document.addEventListener('mouseleave', () => {
+            container.style.transform = `rotateX(0deg) rotateY(0deg)`;
+            bg.style.transform = `scale(1.1) translate(0, 0)`;
         });
     </script>
 </body>
