@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio | Pro Interactive</title>
+    <title>Bio | Pro Status Interactive</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -22,7 +22,6 @@
             filter: brightness(0.45) blur(2px);
             transform: scale(1.1);
             transition: transform 0.8s cubic-bezier(0.2, 0, 0.2, 1);
-            will-change: transform;
         }
 
         .panel-container {
@@ -41,12 +40,12 @@
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* CLOCK (TOP PANEL) */
+        /* CLOCK (TOP) */
         .real-time-clock {
             position: absolute;
             top: 20px; 
             left: 50%;
-            transform: translateX(-50%) translateZ(-10px);
+            transform: translateX(-50%) translateZ(-15px);
             font-size: 32px;
             font-weight: 900;
             color: #fff;
@@ -62,21 +61,38 @@
             padding: 35px; border-radius: 40px;
         }
 
-        /* MINI ROUND BUTTON UNDER AVATAR */
+        /* CLOCK TRIGGER UI */
+        .avatar-container { display: flex; flex-direction: column; align-items: center; }
+        
         .mini-circle-btn {
-            width: 20px; height: 20px;
-            background: rgba(255, 255, 255, 0.5);
-            border: 2px solid rgba(255, 255, 255, 0.8);
+            width: 22px; height: 22px;
+            background: rgba(255, 255, 255, 0.9); /* Default White */
+            border: 2px solid rgba(255, 255, 255, 1);
             border-radius: 50%;
-            margin: 12px auto 0;
+            margin: 12px auto 4px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background 0.4s ease, transform 0.3s ease;
+        }
+        
+        /* State: Clock Active -> Button turns Black */
+        .panel-container.show-clock .mini-circle-btn {
+            background: #000;
+            border-color: #fff;
         }
 
-        /* SECOND PANEL (SOCIALS) - HIDDEN UNDER CARD LIKE THE CLOCK */
+        .clock-label {
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.7);
+            pointer-events: none;
+        }
+
+        /* SOCIAL PANEL (BOTTOM) BEHIND */
         .card-extra {
             position: absolute;
-            bottom: 20px; /* Hidden state behind main card */
+            bottom: 20px; 
             z-index: 10;
             height: 140px;
             border-radius: 35px;
@@ -84,52 +100,40 @@
             padding: 0 25px;
             opacity: 0;
             pointer-events: none;
-            transform: translateX(0) translateZ(-10px);
+            transform: translateZ(-15px);
         }
 
-        /* ANIMATION: CLOCK POPUP (TILT TOP) */
-        .panel-container.show-clock .real-time-clock {
-            top: -65px;
-            opacity: 1;
-        }
-        .panel-container.show-clock .card-main {
-            transform: rotateX(15deg); 
-        }
+        /* ANIMATIONS & TILTS */
+        .panel-container.show-clock .real-time-clock { top: -65px; opacity: 1; }
+        .panel-container.show-clock .card-main { transform: rotateX(15deg); }
 
-        /* ANIMATION: SOCIAL PANEL POPUP (TILT BOTTOM) */
-        .panel-container.is-open .card-extra {
-            bottom: -150px; /* Slides out from the bottom */
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .panel-container.is-open .card-main {
-            transform: rotateX(-15deg); /* Tilt bottom forward */
-        }
+        .panel-container.is-open .card-extra { bottom: -150px; opacity: 1; pointer-events: auto; }
+        .panel-container.is-open .card-main { transform: rotateX(-15deg); }
 
-        /* PREVENT OVERLAP */
-        .panel-container.is-open.show-clock .card-main {
-            transform: rotateX(0deg);
-        }
-
-        .profile-top { display: flex; align-items: center; gap: 25px; transform-style: preserve-3d; margin-bottom: 20px; }
-        .avatar-container { display: flex; flex-direction: column; align-items: center; }
-        .avatar {
-            width: 115px; height: 115px; border-radius: 30px;
-            object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.6);
-        }
-
+        /* BUTTON INDICATOR: More Socials -> Turns Black when open */
         .btn {
             text-decoration: none; 
-            color: rgba(0, 0, 0, 0.85);
-            background: rgba(255, 255, 255, 0.55);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #000; /* Dark text on white */
+            background: rgba(255, 255, 255, 0.8); /* Bright White */
+            border: 1px solid rgba(255, 255, 255, 0.5);
             padding: 12px; border-radius: 16px;
             font-size: 13px; font-weight: 900; 
             text-transform: uppercase; text-align: center;
-            transition: all 0.2s ease;
+            transition: all 0.4s ease;
             cursor: pointer;
+            display: block; width: 100%;
         }
-        .btn:hover { background: rgba(255, 255, 255, 0.8); }
+
+        .panel-container.is-open #toggle-more {
+            background: #000;
+            color: #fff;
+            border-color: #444;
+        }
+
+        .btn:hover { transform: scale(1.02); }
+
+        .profile-top { display: flex; align-items: center; gap: 25px; transform-style: preserve-3d; margin-bottom: 20px; }
+        .avatar { width: 115px; height: 115px; border-radius: 30px; object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.6); }
 
         .social-icon {
             width: 85px; height: 85px;
@@ -138,9 +142,8 @@
             border-radius: 25px;
             display: flex; justify-content: center; align-items: center;
             text-decoration: none; color: black; font-weight: 900; font-size: 16px;
-            transition: transform 0.3s ease;
+            transition: 0.3s;
         }
-        .social-icon:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -156,6 +159,7 @@
                 <div class="avatar-container">
                     <img src="ava.jpg" alt="Avatar" class="avatar">
                     <div class="mini-circle-btn" id="clock-trigger"></div>
+                    <div class="clock-label">Clock</div>
                 </div>
                 <div class="nav-links" style="display: flex; flex-direction: column; gap: 10px; flex-grow: 1;">
                     <a href="https://t.me/jurabek1608" class="btn">Telegram</a>
@@ -181,7 +185,6 @@
         const clockBtn = document.getElementById('clock-trigger');
         const clockElement = document.getElementById('real-time-clock');
 
-        // Parallax Effect
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
@@ -189,13 +192,13 @@
             bg.style.transform = `scale(1.1) translate(${x * -15}px, ${y * -15}px)`;
         });
 
-        // Open Social Panel from Bottom (Tilt logic included)
+        // Toggle Socials + Status Change
         toggleBtn.addEventListener('click', () => {
             container.classList.toggle('is-open');
             toggleBtn.textContent = container.classList.contains('is-open') ? "Close" : "More socials";
         });
 
-        // Open Clock from Top
+        // Toggle Clock + Status Change
         clockBtn.addEventListener('click', () => {
             container.classList.toggle('show-clock');
         });
@@ -207,19 +210,15 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // Corner Teleport
         document.getElementById('card-main').addEventListener('click', (e) => {
             if (e.target.closest('.btn') || e.target.closest('.mini-circle-btn')) return;
             const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             const cs = 85; 
-            const isLeft = x < cs; const isRight = x > rect.width - cs;
-            const isTop = y < cs; const isBottom = y > rect.height - cs;
-
-            if ((isLeft || isRight) && (isTop || isBottom)) {
-                container.style.left = (isLeft ? -150 : 150) + "px";
-                container.style.top = (isTop ? -150 : 150) + "px";
+            if ((x < cs || x > rect.width - cs) && (y < cs || y > rect.height - cs)) {
+                container.style.left = (x < cs ? -150 : 150) + "px";
+                container.style.top = (y < cs ? -150 : 150) + "px";
             } else {
                 container.style.left = "0px"; container.style.top = "0px";
             }
