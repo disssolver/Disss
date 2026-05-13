@@ -28,7 +28,6 @@
         .panel-container {
             position: relative;
             display: flex; flex-direction: column; align-items: center;
-            gap: 10px;
             transform-style: preserve-3d;
             transition: transform 0.1s ease-out, top 0.8s cubic-bezier(0.4, 0, 0.2, 1), left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -38,12 +37,11 @@
             backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             border: 1px solid rgba(255, 255, 255, 0.45);
             width: 440px;
-            box-shadow: none; /* Removed shadows as requested */
             transform-style: preserve-3d;
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* CLOCK STYLE */
+        /* CLOCK (TOP PANEL) */
         .real-time-clock {
             position: absolute;
             top: 20px; 
@@ -74,51 +72,50 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .mini-circle-btn:hover { 
-            background: #fff; 
-            transform: scale(1.2); 
-        }
 
-        /* CLOCK REVEAL ANIMATION */
-        .panel-container.show-clock .real-time-clock {
-            top: -65px;
-            opacity: 1;
-        }
-        .panel-container.show-clock .card-main {
-            transform: rotateX(15deg); /* Tilt effect for clock visibility */
-        }
-
-        /* SECOND PANEL */
+        /* SECOND PANEL (SOCIALS) - HIDDEN UNDER CARD LIKE THE CLOCK */
         .card-extra {
             position: absolute;
-            top: 10%; z-index: 10;
+            bottom: 20px; /* Hidden state behind main card */
+            z-index: 10;
             height: 140px;
             border-radius: 35px;
             display: flex; justify-content: space-around; align-items: center;
             padding: 0 25px;
             opacity: 0;
             pointer-events: none;
-            transform: translateY(-30px) scale(0.9) translateZ(-30px);
+            transform: translateX(0) translateZ(-10px);
         }
 
-        /* SECOND PANEL OPEN STATE */
-        .panel-container.is-open .card-main {
-            transform: translateY(-50px) rotateX(0deg); 
+        /* ANIMATION: CLOCK POPUP (TILT TOP) */
+        .panel-container.show-clock .real-time-clock {
+            top: -65px;
+            opacity: 1;
         }
+        .panel-container.show-clock .card-main {
+            transform: rotateX(15deg); 
+        }
+
+        /* ANIMATION: SOCIAL PANEL POPUP (TILT BOTTOM) */
         .panel-container.is-open .card-extra {
-            position: relative;
-            transform: translateY(0) scale(1) translateZ(0);
+            bottom: -150px; /* Slides out from the bottom */
             opacity: 1;
             pointer-events: auto;
         }
+        .panel-container.is-open .card-main {
+            transform: rotateX(-15deg); /* Tilt bottom forward */
+        }
+
+        /* PREVENT OVERLAP */
+        .panel-container.is-open.show-clock .card-main {
+            transform: rotateX(0deg);
+        }
 
         .profile-top { display: flex; align-items: center; gap: 25px; transform-style: preserve-3d; margin-bottom: 20px; }
-        
         .avatar-container { display: flex; flex-direction: column; align-items: center; }
         .avatar {
             width: 115px; height: 115px; border-radius: 30px;
             object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.6);
-            transition: all 0.4s ease;
         }
 
         .btn {
@@ -140,13 +137,10 @@
             border: 2px solid rgba(255, 255, 255, 0.5);
             border-radius: 25px;
             display: flex; justify-content: center; align-items: center;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-decoration: none; color: black; font-weight: 900; font-size: 16px;
+            transition: transform 0.3s ease;
         }
-        .social-icon:hover {
-            background: rgba(255, 255, 255, 0.7);
-            transform: scale(1.1);
-        }
+        .social-icon:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -187,7 +181,7 @@
         const clockBtn = document.getElementById('clock-trigger');
         const clockElement = document.getElementById('real-time-clock');
 
-        // Mouse movement parallax
+        // Parallax Effect
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
@@ -195,46 +189,39 @@
             bg.style.transform = `scale(1.1) translate(${x * -15}px, ${y * -15}px)`;
         });
 
-        // Toggle social panel
+        // Open Social Panel from Bottom (Tilt logic included)
         toggleBtn.addEventListener('click', () => {
             container.classList.toggle('is-open');
             toggleBtn.textContent = container.classList.contains('is-open') ? "Close" : "More socials";
         });
 
-        // Toggle clock and tilt
+        // Open Clock from Top
         clockBtn.addEventListener('click', () => {
             container.classList.toggle('show-clock');
         });
         
-        // Update real time clock
         function updateClock() {
             const now = new Date();
-            const h = now.getHours().toString().padStart(2, '0');
-            const m = now.getMinutes().toString().padStart(2, '0');
-            clockElement.textContent = `${h}:${m}`;
+            clockElement.textContent = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
         }
         updateClock();
         setInterval(updateClock, 1000);
 
-        // Corner teleport only
+        // Corner Teleport
         document.getElementById('card-main').addEventListener('click', (e) => {
             if (e.target.closest('.btn') || e.target.closest('.mini-circle-btn')) return;
             const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            const cornerSize = 85; 
-
-            const isLeft = x < cornerSize;
-            const isRight = x > rect.width - cornerSize;
-            const isTop = y < cornerSize;
-            const isBottom = y > rect.height - cornerSize;
+            const cs = 85; 
+            const isLeft = x < cs; const isRight = x > rect.width - cs;
+            const isTop = y < cs; const isBottom = y > rect.height - cs;
 
             if ((isLeft || isRight) && (isTop || isBottom)) {
                 container.style.left = (isLeft ? -150 : 150) + "px";
                 container.style.top = (isTop ? -150 : 150) + "px";
             } else {
-                container.style.left = "0px"; 
-                container.style.top = "0px";
+                container.style.left = "0px"; container.style.top = "0px";
             }
         });
     </script>
