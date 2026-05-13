@@ -2,148 +2,273 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Disss | Bio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disss | Core</title>
     <style>
-        /* Полный сброс всех отступов */
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            margin: 0; padding: 0; box-sizing: border-box;
         }
 
         body, html {
-            width: 100%;
-            height: 100vh;
-            /* Flexbox по всему экрану */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #000;
-            color: white;
+            width: 100%; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            background: #000; color: white;
             font-family: 'Segoe UI', sans-serif;
             overflow: hidden;
-            perspective: 1200px;
+            /* perspective defines 3D depth of the whole screen */
+            perspective: 1500px; 
+            backdrop-filter: blur(2px);
         }
 
-        /* ФОН: Растягивается на весь экран без щелей */
-        .bg-fullscreen {
+        /* BACKGROUND - Covers entire screen without black lines */
+        #bg-fullscreen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
             z-index: -1;
-            object-fit: cover; /* Заполняет всё пространство */
-            filter: brightness(0.3) blur(2px); /* Твой блюр на месте */
+            object-fit: cover;
+            filter: brightness(0.35) blur(2px);
             pointer-events: none;
         }
 
-        /* ТЕМНАЯ ТАБЛИЧКА */
+        /* CARD (THE BASE CONTAINER) */
         .card {
             position: relative;
             z-index: 10;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            padding: 40px;
-            width: 90%;
-            max-width: 400px;
-            /* Темный фон, как ты просил */
-            background: rgba(10, 10, 10, 0.9); 
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-direction: column; gap: 20px;
+            padding: 35px; min-width: 380px; max-width: 400px;
+            /* DARKEST TABLE BACKGROUND */
+            background: rgba(10, 10, 10, 0.95); 
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-            transition: transform 0.1s ease-out;
-            will-change: transform;
+            /* Deep static shadow */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            
+            /* DYNAMIC UNDERGLOW - changes position based on tilt */
+            transition: transform 0.1s ease-out, top 0.6s ease-in-out, left 0.6s ease-in-out, filter 0.6s ease-in-out;
+            will-change: transform, top, left, filter;
+            
+            /* internal items also need to allow 3D depth */
+            transform-style: preserve-3d;
+            
+            cursor: pointer; /* To indicate double-click teleport is active */
+        }
+        
+        /* THE DYNAMIC UNDERGLOW EFFECT LAYER */
+        .card-glow {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 40px;
+            z-index: -5;
+            /* Light source beneath the card - positioned and amplified by JS */
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            filter: blur(30px);
+            opacity: 0.1;
+            transition: all 0.15s ease-out;
+            pointer-events: none;
         }
 
         .profile-top {
-            display: flex;
-            align-items: center;
-            gap: 25px;
+            display: flex; align-items: center; gap: 20px;
+            transform-style: preserve-3d;
         }
 
+        /* AVATAR WITH ITS OWN TILT */
         .avatar {
-            width: 110px;
-            height: 110px;
-            border-radius: 30px;
+            width: 100px; height: 100px;
+            border-radius: 25px;
             object-fit: cover;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: transform 0.4s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+            
+            /* Smooth lift transitions and independent tilt handled by JS */
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        .avatar:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
         }
 
         .nav-links {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            flex-grow: 1;
+            display: flex; flex-direction: column; gap: 10px; flex-grow: 1;
+            transform-style: preserve-3d;
         }
 
-        /* КНОПКИ: Английский текст, эффект выступа и свечение */
+        /* BUTTONS: Independent tilt, lift, local glow */
         .btn {
-            text-decoration: none;
-            color: #fff;
-            background: rgba(255, 255, 255, 0.05);
+            display: block; width: 100%;
+            text-decoration: none; color: #fff;
+            background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: 15px;
-            font-size: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            text-align: center;
-            transition: all 0.3s ease;
+            padding: 12px; border-radius: 15px;
+            font-size: 13px; font-weight: 700;
+            text-transform: uppercase; text-align: center;
+            
+            /* Independent tilt handled by JS */
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            z-index: 10;
         }
 
         .btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-4px); /* Эффект выступа */
-            border-color: rgba(255, 255, 255, 0.4);
-            /* Свечение только под кнопкой */
-            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            
+            /* LOCAL GLOW - text glow is handled here */
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
         }
 
-        .nickname {
-            margin-top: 15px;
+        /* TRANSPARENT NICKNAME DISSS WITH RAYS */
+        .nickname-container {
+            margin-top: 10px;
             text-align: center;
-            font-size: 44px;
-            font-weight: 900;
-            letter-spacing: 12px;
-            text-transform: uppercase;
-            color: #fff;
+            position: relative;
+            transform-style: preserve-3d;
+            
+            /* Text itself does not tilt (as requested) */
+            perspective: 1000px; 
             cursor: default;
+        }
+        
+        .nickname {
+            display: inline-block;
+            margin: 0;
+            font-size: 40px; font-weight: 900;
+            letter-spacing: 12px; text-transform: uppercase;
+            
+            /* THE KEY: Make the text transparent with an outline */
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4); 
+            text-shadow: none;
+            
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 20;
+        }
+        
+        /* THE RAYS EFFECT - a hidden layer behind the text */
+        .nickname-rays {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150%; height: 150%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.0) 70%);
+            filter: blur(15px);
+            z-index: 10;
+            opacity: 0; /* Hidden initially */
+            transition: opacity 0.3s ease-out;
+            pointer-events: none;
+        }
+
+        .nickname:hover {
+            /* On hover, amplify the outline slightly and activate text shadow */
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.8);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+        }
+        
+        .nickname:hover ~ .nickname-rays {
+            /* On hover, activate the background rays */
+            opacity: 1;
         }
     </style>
 </head>
 <body>
 
-    <img src="bg.jpg" class="bg-fullscreen" alt="background">
+    <img src="bg.jpg" id="bg-fullscreen" alt="background">
 
     <div class="card" id="card">
+        <div class="card-glow" id="card-glow"></div>
+        
         <div class="profile-top">
-            <img src="ava.jpg" alt="Avatar" class="avatar">
+            <img src="ava.jpg" alt="Avatar" class="avatar" id="avatar">
             <div class="nav-links">
-                <a href="https://t.me/jurabek1608" class="btn">Telegram</a>
-                <a href="https://discordapp.com/users/1035880231619280926" class="btn">Discord</a>
-                <a href="https://steamcommunity.com/profiles/76561199554598143" class="btn">Steam</a>
+                <a href="https://t.me/jurabek1608" class="btn" data-tilt-item>Telegram</a>
+                <a href="https://discordapp.com/users/1035880231619280926" class="btn" data-tilt-item>Discord</a>
+                <a href="https://steamcommunity.com/profiles/76561199554598143" class="btn" data-tilt-item>Steam</a>
             </div>
         </div>
-        <h1 class="nickname">DISSS</h1>
+        
+        <div class="nickname-container">
+            <h1 class="nickname">DISSS</h1>
+            <div class="nickname-rays"></div>
+        </div>
     </div>
 
     <script>
         const card = document.getElementById('card');
+        const cardGlow = document.getElementById('card-glow');
+        const avatar = document.getElementById('avatar');
+        const tiltItems = document.querySelectorAll('[data-tilt-item]'); // for buttons
 
-        // Эффект слежки только для карточки (чтобы не рвать фон)
+        // --- CORE 3D TILT EFFECT ---
+        
+        // Settings for the tilt intensity
+        const settings = {
+            cardMaxTilt: 20, // Max tilt angle for the main table (20deg is intense)
+            itemMaxTilt: 15, // Max tilt for internal items (avatar, buttons)
+            itemMaxLift: 12 // Max Z lift in pixels
+        };
+
+        function getNormalizedPosition(e, target) {
+            // Calculates mouse position relative to the center of the target element (from -0.5 to 0.5)
+            const rect = target.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+            return {
+                x: x - 0.5,
+                y: y - 0.5,
+                pctX: Math.abs(x - 0.5), // Percentage from center to edge (for glow intensity)
+                pctY: Math.abs(y - 0.5)
+            };
+        }
+
+        // Apply tilt to the main card and its special glow
         document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) - 0.5;
-            const y = (e.clientY / window.innerHeight) - 0.5;
-            card.style.transform = `rotateX(${y * -15}deg) rotateY(${x * 15}deg)`;
+            const pos = getNormalizedPosition(e, card);
+
+            // 1. Calculate Tilt angles
+            const rotateX = pos.y * settings.cardMaxTilt;
+            const rotateY = pos.x * settings.cardMaxTilt * -1; // Y axis is inverted for rotation
+
+            // Apply to card
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+            // 2. Adjust DYNAMIC UNDERGLOW: position the "light source" based on mouse
+            const glowPct = 0.1 + (Math.sqrt(Math.pow(pos.x, 2) + Math.pow(pos.y, 2)) * 0.3); // Glow amplifies with distance from center
+            
+            // Re-center and amplify glow on the side of the tilt
+            cardGlow.style.opacity = glowPct; 
+            cardGlow.style.background = `radial-gradient(circle at ${pos.x * 120 + 50}% ${pos.y * 120 + 50}%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.0) 70%)`;
         });
 
-        // Поддержка тача для мобилок
-        document.addEventListener('touchmove', (e) => {
+        // Independent tilt and lift for elements WITHIN the card
+        // Avatar independent tilt & lift
+        card.addEventListener('mousemove', (e) => {
+            // Apply independent tilt to the Avatar
+            const avaPos = getNormalizedPosition(e, avatar);
+            const avaRX = avaPos.y * settings.itemMaxTilt;
+            const avaRY = avaPos.x * settings.itemMaxTilt * -1;
+            avatar.style.transform = `translateZ(5px) rotateX(${avaRX}deg) rotateY(${avaRY}deg) scale(1.03)`;
+        });
+
+        // Reset elements on mouse leave
+        card.addEventListener('mouseleave', () => {
+            // Reset main card
+            card.style.transform = `rotateX(0) rotateY(0)`;
+            // Reset Glow
+            cardGlow.style.opacity = 0.1;
+            cardGlow.style.background = `radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%)`;
+            // Reset Avatar
+            avatar.style.transform = `translateZ(0) rotateX(0) rotateY(0) scale(1)`;
+            // Reset Buttons (handled below by their own leave event)
+        });
+
+        // Apply independent tilt & lift to each BUTTON when hovered
+        tiltItems.forEach(item => {
+            // The item will tilt relative to itself
+            item.addEventListener('mousemove', (e) => {
+                const itemPos = getNormalizedPosition(e, item);
+                const itemRX = itemPos
         
