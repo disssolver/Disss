@@ -28,7 +28,7 @@
         .panel-container {
             position: relative;
             display: flex; flex-direction: column; align-items: center;
-            gap: 8px; /* Closer panels */
+            gap: 8px;
             transform-style: preserve-3d;
             transition: transform 0.1s ease-out, top 0.8s cubic-bezier(0.4, 0, 0.2, 1), left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -40,53 +40,58 @@
             width: 420px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
             transform-style: preserve-3d;
-            /* Super smooth animation curve */
             transition: all 0.9s cubic-bezier(0.34, 1.3, 0.64, 1);
         }
 
-        /* HIDDEN REAL-TIME CLOCK (direct child of body, not container) */
+        /* CLOCK: STICKS OUT HALFWAY */
         .real-time-clock {
             position: absolute;
-            top: 25px; left: 50%;
-            transform: translateX(-50%) translateY(20px) translateZ(-5px);
+            top: -15px; /* Positioned to peak out halfway */
+            left: 50%;
+            transform: translateX(-50%) translateZ(-1px);
             font-size: 24px; font-weight: 900;
-            color: rgba(255, 255, 255, 0); /* Hidden */
+            color: rgba(255, 255, 255, 0.9);
             letter-spacing: 3px;
-            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             z-index: 5;
             pointer-events: none;
+            /* Shadow only at the bottom where it touches the card */
+            mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
         }
         
-        /* Inner shadow that hides the clock initially (cast by top edge of first card) */
-        .real-time-clock::after {
-            content: '';
-            position: absolute; top: -100px; left: -100px;
-            width: calc(100% + 200px); height: calc(100% + 200px);
+        /* THE SHADOW UNDERNEATH THE CLOCK (on the card edge) */
+        .clock-shadow {
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 120px; height: 15px;
             background: transparent;
-            box-shadow: inset 0 -40px 30px rgba(0, 0, 0, 0.8); /* Shadow from card */
+            box-shadow: 0 -10px 15px rgba(0, 0, 0, 0.8);
+            z-index: 25;
             pointer-events: none;
-            transition: all 0.6s ease;
+            transition: all 0.5s ease;
         }
 
-        /* MAIN CARD - No glowing classes needed */
         .card-main {
             position: relative; z-index: 20;
             padding: 35px; border-radius: 40px;
         }
         
-        /* Reveal clock and remove shadow when main card is hovered */
+        /* Hover: Clock rises fully, Shadow disappears */
         .panel-container:hover .real-time-clock {
-            color: rgba(255, 255, 255, 1);
-            transform: translateX(-50%) translateY(0) translateZ(0px);
+            top: -45px;
+            mask-image: none;
+            -webkit-mask-image: none;
         }
-        .panel-container:hover .real-time-clock::after {
-             box-shadow: inset 0 -100px 30px transparent; /* No shadow when clock rises */
+        .panel-container:hover .clock-shadow {
+            opacity: 0;
         }
 
         .card-extra {
             position: absolute;
             top: 20%; z-index: 10;
-            height: 140px; /* Slightly taller for bigger icons */
+            height: 140px;
             border-radius: 35px;
             display: flex; justify-content: space-around; align-items: center;
             padding: 0 25px;
@@ -95,7 +100,6 @@
             transform: translateY(-20px) scale(0.95) translateZ(-20px);
         }
 
-        /* OPEN STATE */
         .panel-container.is-open .card-main {
             transform: translateY(-40px);
         }
@@ -116,21 +120,12 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer; position: relative; z-index: 2;
         }
-        .ava-glow {
-            position: absolute; bottom: 0; left: 50%;
-            transform: translateX(-50%) translateZ(-1px);
-            width: 80%; height: 30%; background: rgba(255, 255, 255, 0);
-            filter: blur(20px); transition: 0.4s ease;
-        }
         .avatar:hover { transform: translateY(-15px) scale(1.15) translateZ(20px); }
-        .avatar:hover + .ava-glow { background: rgba(255, 255, 255, 0.8); bottom: -10px; }
-
-        .nav-links { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; transform-style: preserve-3d; }
 
         .btn {
             text-decoration: none; 
-            color: rgba(0, 0, 0, 0.85);
-            background: rgba(255, 255, 255, 0.45);
+            color: rgba(0, 0, 0, 0.85); /* Dark text */
+            background: rgba(255, 255, 255, 0.5); /* Bright button */
             border: 1px solid rgba(255, 255, 255, 0.4);
             padding: 12px; border-radius: 15px;
             font-size: 13px; font-weight: 900; 
@@ -138,21 +133,20 @@
             transition: all 0.2s ease; transform-style: preserve-3d;
             cursor: pointer;
         }
-        .btn:hover { background: rgba(255, 255, 255, 0.6); transform: translateZ(25px); }
+        .btn:hover { background: rgba(255, 255, 255, 0.7); transform: translateZ(25px); }
         .btn:active { transform: translateZ(-30px) scale(0.85); }
 
-        /* BIGGER SOCIAL ICONS */
         .social-icon {
-            width: 80px; height: 80px; /* Made bigger as requested */
-            background: rgba(255, 255, 255, 0.35);
-            border: 2px solid rgba(255, 255, 255, 0.4);
+            width: 85px; height: 85px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.5);
             border-radius: 25px;
             display: flex; justify-content: center; align-items: center;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-decoration: none; color: black; font-weight: 900; font-size: 14px; /* Text scaled too */
+            text-decoration: none; color: black; font-weight: 900; font-size: 15px;
         }
         .social-icon:hover {
-            background: rgba(255, 255, 255, 0.65);
+            background: rgba(255, 255, 255, 0.75);
             transform: translateY(-10px) scale(1.1) translateZ(15px);
             border-color: #fff;
         }
@@ -164,13 +158,14 @@
 
     <div class="panel-container" id="panel-container">
         
-        <div class="real-time-clock" id="real-time-clock">12:00</div>
+        <div class="real-time-clock" id="real-time-clock">00:00</div>
 
         <div class="glass-base card-main" id="card-main">
+            <div class="clock-shadow"></div>
+            
             <div class="profile-top">
                 <div class="ava-box">
                     <img src="ava.jpg" alt="Avatar" class="avatar">
-                    <div class="ava-glow"></div>
                 </div>
                 <div class="nav-links">
                     <a href="https://t.me/jurabek1608" class="btn">Telegram</a>
@@ -195,7 +190,6 @@
         const toggleBtn = document.getElementById('toggle-more');
         const clockElement = document.getElementById('real-time-clock');
 
-        // MOUSE TRACKING
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
@@ -203,37 +197,20 @@
             bg.style.transform = `scale(1.1) translate(${x * -15}px, ${y * -15}px)`;
         });
 
-        // ANIMATION (Glow and sequence removed as requested)
         toggleBtn.addEventListener('click', () => {
-            if (!container.classList.contains('is-open')) {
-                // Direct open, no glow sequence
-                container.classList.add('is-open');
-                toggleBtn.textContent = "Close";
-            } else {
-                container.classList.remove('is-open');
-                toggleBtn.textContent = "More socials";
-            }
+            container.classList.toggle('is-open');
+            toggleBtn.textContent = container.classList.contains('is-open') ? "Close" : "More socials";
         });
-        
-        // --- REAL TIME CLOCK LOGIC ---
         
         function updateClock() {
             const now = new Date();
-            let hours = now.getHours();
-            let minutes = now.getMinutes();
-            
-            // Format 12:00
-            hours = hours < 10 ? '0' + hours : hours;
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            
-            clockElement.textContent = hours + ':' + minutes;
+            let h = now.getHours().toString().padStart(2, '0');
+            let m = now.getMinutes().toString().padStart(2, '0');
+            clockElement.textContent = h + ':' + m;
         }
-        
-        // Initial call and set interval for every second
         updateClock();
         setInterval(updateClock, 1000);
 
-        // CORNER TELEPORT (shadow logic remains static)
         document.getElementById('card-main').addEventListener('click', (e) => {
             if (e.target.closest('.btn')) return;
             const rect = container.getBoundingClientRect();
