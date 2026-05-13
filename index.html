@@ -44,32 +44,49 @@
             transition: all 0.9s cubic-bezier(0.34, 1.3, 0.64, 1);
         }
 
+        /* HIDDEN REAL-TIME CLOCK (direct child of body, not container) */
+        .real-time-clock {
+            position: absolute;
+            top: 25px; left: 50%;
+            transform: translateX(-50%) translateY(20px) translateZ(-5px);
+            font-size: 24px; font-weight: 900;
+            color: rgba(255, 255, 255, 0); /* Hidden */
+            letter-spacing: 3px;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        /* Inner shadow that hides the clock initially (cast by top edge of first card) */
+        .real-time-clock::after {
+            content: '';
+            position: absolute; top: -100px; left: -100px;
+            width: calc(100% + 200px); height: calc(100% + 200px);
+            background: transparent;
+            box-shadow: inset 0 -40px 30px rgba(0, 0, 0, 0.8); /* Shadow from card */
+            pointer-events: none;
+            transition: all 0.6s ease;
+        }
+
+        /* MAIN CARD - No glowing classes needed */
         .card-main {
             position: relative; z-index: 20;
             padding: 35px; border-radius: 40px;
         }
-
-        /* BOTTOM GLOW ON MAIN CARD */
-        .card-main::after {
-            content: '';
-            position: absolute; bottom: 0; left: 10%;
-            width: 80%; height: 2px;
-            background: rgba(255, 255, 255, 0);
-            box-shadow: 0 0 0px rgba(255, 255, 255, 0);
-            transition: all 0.4s ease;
-            border-radius: 50%;
+        
+        /* Reveal clock and remove shadow when main card is hovered */
+        .panel-container:hover .real-time-clock {
+            color: rgba(255, 255, 255, 1);
+            transform: translateX(-50%) translateY(0) translateZ(0px);
         }
-
-        /* GLOWING STATE */
-        .panel-container.is-glowing .card-main::after {
-            background: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 -10px 30px 5px rgba(255, 255, 255, 0.6);
+        .panel-container:hover .real-time-clock::after {
+             box-shadow: inset 0 -100px 30px transparent; /* No shadow when clock rises */
         }
 
         .card-extra {
             position: absolute;
             top: 20%; z-index: 10;
-            height: 120px;
+            height: 140px; /* Slightly taller for bigger icons */
             border-radius: 35px;
             display: flex; justify-content: space-around; align-items: center;
             padding: 0 25px;
@@ -80,7 +97,7 @@
 
         /* OPEN STATE */
         .panel-container.is-open .card-main {
-            transform: translateY(-30px);
+            transform: translateY(-40px);
         }
 
         .panel-container.is-open .card-extra {
@@ -124,14 +141,15 @@
         .btn:hover { background: rgba(255, 255, 255, 0.6); transform: translateZ(25px); }
         .btn:active { transform: translateZ(-30px) scale(0.85); }
 
+        /* BIGGER SOCIAL ICONS */
         .social-icon {
-            width: 65px; height: 65px;
+            width: 80px; height: 80px; /* Made bigger as requested */
             background: rgba(255, 255, 255, 0.35);
             border: 2px solid rgba(255, 255, 255, 0.4);
-            border-radius: 20px;
+            border-radius: 25px;
             display: flex; justify-content: center; align-items: center;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-decoration: none; color: black; font-weight: 900; font-size: 11px;
+            text-decoration: none; color: black; font-weight: 900; font-size: 14px; /* Text scaled too */
         }
         .social-icon:hover {
             background: rgba(255, 255, 255, 0.65);
@@ -145,6 +163,9 @@
     <img src="bg.jpg" id="bg-parallax" alt="background">
 
     <div class="panel-container" id="panel-container">
+        
+        <div class="real-time-clock" id="real-time-clock">12:00</div>
+
         <div class="glass-base card-main" id="card-main">
             <div class="profile-top">
                 <div class="ava-box">
@@ -172,6 +193,7 @@
         const container = document.getElementById('panel-container');
         const bg = document.getElementById('bg-parallax');
         const toggleBtn = document.getElementById('toggle-more');
+        const clockElement = document.getElementById('real-time-clock');
 
         // MOUSE TRACKING
         document.addEventListener('mousemove', (e) => {
@@ -181,29 +203,37 @@
             bg.style.transform = `scale(1.1) translate(${x * -15}px, ${y * -15}px)`;
         });
 
-        // ANIMATION WITH SEQUENTIAL GLOW
+        // ANIMATION (Glow and sequence removed as requested)
         toggleBtn.addEventListener('click', () => {
             if (!container.classList.contains('is-open')) {
-                // Step 1: Start Glow
-                container.classList.add('is-glowing');
-                
-                // Step 2: Open Panel after a short delay
-                setTimeout(() => {
-                    container.classList.add('is-open');
-                    toggleBtn.textContent = "Close";
-                    
-                    // Step 3: Remove Glow once opened
-                    setTimeout(() => {
-                        container.classList.remove('is-glowing');
-                    }, 600);
-                }, 150);
+                // Direct open, no glow sequence
+                container.classList.add('is-open');
+                toggleBtn.textContent = "Close";
             } else {
                 container.classList.remove('is-open');
                 toggleBtn.textContent = "More socials";
             }
         });
+        
+        // --- REAL TIME CLOCK LOGIC ---
+        
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            
+            // Format 12:00
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            
+            clockElement.textContent = hours + ':' + minutes;
+        }
+        
+        // Initial call and set interval for every second
+        updateClock();
+        setInterval(updateClock, 1000);
 
-        // CORNER TELEPORT
+        // CORNER TELEPORT (shadow logic remains static)
         document.getElementById('card-main').addEventListener('click', (e) => {
             if (e.target.closest('.btn')) return;
             const rect = container.getBoundingClientRect();
