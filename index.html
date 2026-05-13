@@ -3,24 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio | Liquid Glass Edition</title>
+    <title>Bio | Liquid Glass Fixed Background</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body, html {
             width: 100%; height: 100vh;
             display: flex; justify-content: center; align-items: center;
-            background: #000; color: white;
+            background: #050505; color: white;
             font-family: 'Segoe UI', Roboto, sans-serif;
             overflow: hidden;
         }
 
+        /* UPDATED BACKGROUND LOGIC */
         #bg-parallax {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
-            z-index: -1; object-fit: cover;
-            filter: brightness(0.5) blur(3px);
+            z-index: -1; 
+            background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop') no-repeat center center;
+            background-size: cover;
+            filter: brightness(0.4) blur(4px);
             transform: scale(1.1);
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         .panel-container {
@@ -29,39 +33,35 @@
             transition: transform 0.1s ease-out, top 0.9s cubic-bezier(0.23, 1, 0.32, 1), left 0.9s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        /* LIQUID GLASS EFFECT */
         .glass-base {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(45px) saturate(160%);
+            -webkit-backdrop-filter: blur(45px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             width: 440px;
             transition: all 0.7s cubic-bezier(0.5, 0, 0.1, 1);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
         }
 
-        /* CLOCK STYLE */
         .real-time-clock {
             position: absolute;
             top: 20px; left: 50%;
             transform: translateX(-50%);
-            font-size: 36px; font-weight: 900;
+            font-size: 38px; font-weight: 900;
             color: rgba(255, 255, 255, 0.95);
-            letter-spacing: 6px;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            letter-spacing: 8px;
+            text-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
             transition: all 0.7s cubic-bezier(0.5, 0, 0.1, 1);
             z-index: 1; opacity: 0;
             pointer-events: none;
         }
 
-        /* MAIN CARD */
         .card-main {
             position: relative;
             z-index: 100; 
             padding: 35px; border-radius: 45px;
         }
 
-        /* BUTTON DEPTH & SOFT SHADOWS */
         .mini-circle-btn {
             width: 24px; height: 24px;
             background: rgba(255, 255, 255, 0.95);
@@ -74,13 +74,13 @@
         .mini-circle-btn.active {
             background: #000;
             transform: scale(0.9) translateY(2px);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
             border: 2px solid #fff;
         }
 
         .btn {
             text-decoration: none; color: #000;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.85);
             border: none;
             padding: 14px; border-radius: 20px;
             font-size: 13px; font-weight: 800; 
@@ -89,17 +89,16 @@
             cursor: pointer;
             display: block; width: 100%;
             position: relative; z-index: 200;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
         }
 
         .btn.active {
-            background: rgba(0, 0, 0, 0.8) !important;
+            background: rgba(0, 0, 0, 0.85) !important;
             color: #fff !important;
             transform: scale(0.98) translateY(3px);
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
         }
 
-        /* EXTRA PANEL (BRIGHTER) */
         .card-extra {
             position: absolute;
             bottom: 0; left: 0;
@@ -111,18 +110,16 @@
             transition: all 0.8s cubic-bezier(0.5, 0, 0.1, 1);
         }
 
-        /* ANIMATION REVEAL */
-        .panel-container.show-clock .real-time-clock { top: -80px; opacity: 1; }
+        .panel-container.show-clock .real-time-clock { top: -85px; opacity: 1; }
         .panel-container.is-open .card-extra { bottom: -160px; opacity: 1; pointer-events: auto; }
 
-        /* BRIGHT SOCIAL ICONS */
         .social-icon {
             width: 85px; height: 85px; 
-            background: rgba(255, 255, 255, 0.85); /* Much brighter */
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 28px; display: flex; justify-content: center; align-items: center;
             text-decoration: none; color: #000; font-weight: 900; 
             transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
         .social-icon:hover {
             background: #fff;
@@ -137,7 +134,7 @@
 </head>
 <body>
 
-    <img src="bg.jpg" id="bg-parallax" alt="Background">
+    <div id="bg-parallax"></div>
 
     <div class="panel-container" id="panel-container">
         
@@ -174,20 +171,17 @@
         const clockBtn = document.getElementById('clock-trigger');
         const clockElement = document.getElementById('real-time-clock');
 
-        // Toggle Socials Panel
         toggleBtn.addEventListener('click', () => {
             container.classList.toggle('is-open');
             toggleBtn.classList.toggle('active');
             toggleBtn.textContent = container.classList.contains('is-open') ? "Close" : "More socials";
         });
 
-        // Toggle Clock Panel
         clockBtn.addEventListener('click', () => {
             container.classList.toggle('show-clock');
             clockBtn.classList.toggle('active');
         });
 
-        // Mouse Parallax (Movement Only)
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
@@ -201,7 +195,6 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // Corner Teleport
         document.getElementById('card-main').addEventListener('click', (e) => {
             if (e.target.closest('.btn') || e.target.closest('#clock-trigger')) return;
             const rect = container.getBoundingClientRect();
