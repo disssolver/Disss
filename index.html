@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio | Final Layout</title>
+    <title>Bio | Glass Square UI</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -11,7 +11,7 @@
             width: 100%; height: 100vh;
             display: flex; justify-content: center; align-items: center;
             background: #000; color: white;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden; perspective: 2000px;
         }
 
@@ -30,15 +30,15 @@
         }
 
         .glass-base {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.07);
             backdrop-filter: blur(40px) saturate(160%);
             -webkit-backdrop-filter: blur(40px) saturate(160%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
             transition: all 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        .card-main { position: relative; z-index: 100; width: 440px; padding: 35px; border-radius: 45px; }
+        .card-main { position: relative; z-index: 100; width: 460px; padding: 35px; border-radius: 45px; }
 
         /* SIDE PANELS */
         .side-panel {
@@ -48,10 +48,10 @@
             display: flex; flex-direction: column;
         }
         .card-pc { right: 0; transform: translateX(0); }
-        .panel-container.pc-open .card-pc { transform: translateX(355px); opacity: 1; pointer-events: auto; }
+        .panel-container.pc-open .card-pc { transform: translateX(370px); opacity: 1; pointer-events: auto; }
 
         .card-music { left: 0; transform: translateX(0); }
-        .panel-container.music-open .card-music { transform: translateX(-355px); opacity: 1; pointer-events: auto; }
+        .panel-container.music-open .card-music { transform: translateX(-370px); opacity: 1; pointer-events: auto; }
 
         .specs-title {
             font-size: 16px; font-weight: 900; text-transform: uppercase;
@@ -67,30 +67,31 @@
         .item-list a { text-decoration: none; color: rgba(255,255,255,0.6); transition: 0.3s; display: block; }
         .item-list a:hover { color: #fff; transform: translateX(5px); }
 
-        /* AVATAR & LEFT COLUMN CONTROLS */
-        .avatar { width: 115px; height: 115px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        /* AVATAR & SQUARE BUTTONS COLUMN */
+        .avatar { width: 120px; height: 120px; border-radius: 38px; border: 1px solid rgba(255,255,255,0.25); margin-bottom: 15px; }
         
-        .controls-column { margin-top: 15px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .square-controls { display: flex; flex-direction: column; gap: 12px; align-items: center; }
 
-        /* CLOCK CIRCLE */
-        .mini-circle-btn {
-            width: 26px; height: 26px; background: rgba(255,255,255,0.6);
-            border-radius: 50%; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);
+        /* THE COMPACT SQUARE BUTTON STYLE */
+        .btn-sq {
+            width: 54px; height: 54px; /* Укороченная версия твоих кнопок */
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        .mini-circle-btn.active { background: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.3); transform: scale(1.1); }
+        .btn-sq:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255,255,255,0.3); }
+        .btn-sq.active { 
+            background: rgba(255, 255, 255, 0.2); 
+            border-color: #fff; 
+            transform: translateY(2px);
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+        }
 
-        /* MUSIC SQUARE (Short square style) */
-        .square-music-btn {
-            width: 26px; height: 26px; background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px); border-radius: 8px; cursor: pointer; 
-            transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .square-music-btn::after {
-            content: ""; width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 1px;
-        }
-        .square-music-btn.active { background: rgba(255,255,255,0.3); border-color: #fff; transform: scale(1.1); }
-        .square-music-btn.active::after { background: #fff; }
+        .sq-icon { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.7); border-radius: 5px; }
+        .sq-icon.circle { border-radius: 50%; } /* Для часов круг, для музыки квадрат */
 
         .btn {
             color: rgba(255,255,255,0.9);
@@ -99,9 +100,10 @@
             text-align: center; cursor: pointer; display: block; width: 100%;
             margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s;
         }
+        .btn:hover { background: rgba(255, 255, 255, 0.1); }
         .btn.active { background: rgba(255, 255, 255, 0.15) !important; border-color: rgba(255, 255, 255, 0.4); transform: translateY(2px); }
 
-        .label-text { font-size: 8px; font-weight: 900; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 4px; }
+        .label-text { font-size: 7px; font-weight: 900; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-top: 4px; }
         
         .card-extra {
             position: absolute; bottom: 0; left: 0; z-index: 10;
@@ -110,15 +112,12 @@
             padding: 0 25px; opacity: 0; pointer-events: none; transition: 0.6s;
         }
         
-        .social-icon {
-            width: 85px; height: 85px; background: rgba(255, 255, 255, 0.08);
-            border-radius: 28px; display: flex; justify-content: center; align-items: center; color: white; font-weight: 900;
-        }
+        .social-icon { width: 85px; height: 85px; background: rgba(255, 255, 255, 0.08); border-radius: 28px; display: flex; justify-content: center; align-items: center; color: white; font-weight: 900; }
 
         .panel-container.show-clock .real-time-clock { top: -75px; opacity: 1; }
         .panel-container.is-open .card-extra { bottom: -160px; opacity: 1; pointer-events: auto; }
-        .real-time-clock { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 36px; font-weight: 900; letter-spacing: 6px; opacity: 0; transition: 0.6s; }
-        .profile-top { display: flex; align-items: flex-start; gap: 25px; margin-bottom: 20px; }
+        .real-time-clock { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 38px; font-weight: 900; letter-spacing: 6px; opacity: 0; transition: 0.6s; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.3); }
+        .profile-top { display: flex; align-items: flex-start; gap: 30px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -150,19 +149,19 @@
             <div class="profile-top">
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <img src="ava.jpg" class="avatar">
-                    <div class="controls-column">
-                        <div style="display: flex; flex-direction: column; align-items: center;">
-                            <div class="mini-circle-btn" id="clock-trigger"></div>
-                            <div class="label-text">Clock</div>
+                    <div class="square-controls">
+                        <div class="btn-sq" id="clock-trigger">
+                            <div class="sq-icon circle"></div>
+                            <span class="label-text">Time</span>
                         </div>
-                        <div style="display: flex; flex-direction: column; align-items: center;">
-                            <div class="square-music-btn" id="music-trigger"></div>
-                            <div class="label-text">Music</div>
+                        <div class="btn-sq" id="music-trigger">
+                            <div class="sq-icon"></div>
+                            <span class="label-text">Music</span>
                         </div>
                     </div>
                 </div>
                 
-                <div class="nav-links" style="display: flex; flex-direction: column; flex-grow: 1;">
+                <div class="nav-links" style="display: flex; flex-direction: column; flex-grow: 1; padding-top: 5px;">
                     <div class="btn">Telegram</div>
                     <div class="btn">Discord</div>
                     <div class="btn">Steam</div>
