@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio | Full Expansion UI</title>
+    <title>Bio | Compact Music Button</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -52,7 +52,7 @@
         .card-pc { right: 0; transform: translateX(0); }
         .panel-container.pc-open .card-pc { transform: translateX(355px); opacity: 1; pointer-events: auto; }
 
-        /* MUSIC PANEL (LEFT) */
+        /* MUSIC PANEL (LEFT) - TRIGGERED BY NEW SHORT BUTTON */
         .card-music { left: 0; transform: translateX(0); }
         .panel-container.music-open .card-music { transform: translateX(-355px); opacity: 1; pointer-events: auto; }
 
@@ -63,10 +63,8 @@
         }
 
         /* SCROLLABLE LIST FOR MUSIC */
-        .list-container {
-            flex-grow: 1; overflow-y: auto; padding-right: 5px;
-        }
-        .list-container::-webkit-scrollbar { width: 0px; } /* Hide scrollbar */
+        .list-container { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
+        .list-container::-webkit-scrollbar { width: 0px; }
 
         .item-list { list-style: none; }
         .item-list li {
@@ -79,12 +77,10 @@
         }
         .item-list a:hover { color: #fff; transform: translateX(5px); }
 
-        /* AVATAR & CONTROLS */
+        /* AVATAR & CLOCK */
         .avatar { width: 115px; height: 115px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.3); }
         
-        .controls-row { 
-            margin-top: 15px; display: flex; flex-direction: column; align-items: center; gap: 10px;
-        }
+        .controls-row { margin-top: 15px; display: flex; flex-direction: column; align-items: center; }
 
         .mini-circle-btn {
             width: 22px; height: 22px; background: rgba(255,255,255,0.6);
@@ -92,22 +88,21 @@
         }
         .mini-circle-btn.active { background: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.3); }
 
-        /* NEW SQUARE MUSIC BUTTON */
-        .square-btn {
-            width: 22px; height: 22px; background: rgba(255,255,255,0.4);
-            border-radius: 6px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);
-        }
-        .square-btn.active { background: #fff; transform: scale(1.1); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        /* NAV LINKS ROW FOR SHORT BUTTONS */
+        .nav-links-row { display: flex; gap: 10px; width: 100%; margin-bottom: 12px; }
 
         .btn {
             text-decoration: none; color: rgba(255,255,255,0.9);
             background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(15px);
             padding: 14px; border-radius: 20px; font-size: 13px; font-weight: 800;
             text-transform: uppercase; text-align: center; cursor: pointer; display: block;
-            width: 100%; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1);
+            width: 100%; border: 1px solid rgba(255,255,255,0.1);
             transition: 0.3s;
         }
         .btn.active { background: rgba(255, 255, 255, 0.15) !important; border-color: rgba(255, 255, 255, 0.4); }
+
+        /* SHORTENED BUTTONS IN SIDE-BY-SIDE ROW */
+        .btn-short { width: 50%; margin-bottom: 0; }
 
         .card-extra {
             position: absolute; bottom: 0; left: 0; z-index: 10;
@@ -166,18 +161,18 @@
                             <div class="mini-circle-btn" id="clock-trigger"></div>
                             <div class="label-text">Clock</div>
                         </div>
-                        <div style="text-align: center;">
-                            <div class="square-btn" id="music-trigger"></div>
-                            <div class="label-text">Songs</div>
-                        </div>
                     </div>
                 </div>
                 
-                <div class="nav-links" style="display: flex; flex-direction: column; gap: 10px; flex-grow: 1;">
-                    <div class="btn">Telegram</div>
-                    <div class="btn">Discord</div>
-                    <div class="btn">Steam</div>
-                    <div class="btn" id="pc-trigger">My PC</div>
+                <div class="nav-links" style="display: flex; flex-direction: column; flex-grow: 1;">
+                    <div class="btn" style="margin-bottom: 10px;">Telegram</div>
+                    <div class="btn" style="margin-bottom: 10px;">Discord</div>
+                    <div class="btn" style="margin-bottom: 10px;">Steam</div>
+                    
+                    <div class="nav-links-row">
+                        <div class="btn btn-short" id="pc-trigger">My PC</div>
+                        <div class="btn btn-short" id="music-trigger">Music</div>
+                    </div>
                 </div>
             </div>
             <button class="btn" id="toggle-more">More socials</button>
