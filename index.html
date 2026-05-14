@@ -3,55 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio | Final Solid Background</title>
+    <title>Bio | Clean Blur Edition</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body, html {
             width: 100%; height: 100vh;
             display: flex; justify-content: center; align-items: center;
-            background: #000;
+            background: #000; 
             color: white;
             font-family: 'Segoe UI', Roboto, sans-serif;
             overflow: hidden;
         }
 
-        /* HARD-FIXED BACKGROUND */
-        .background-static {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -999; /* Always behind everything */
-            pointer-events: none;
-        }
-
-        #bg-parallax {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.4) blur(10px);
-            display: block;
-        }
-
         .panel-container {
             position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: flex; flex-direction: column; align-items: center;
             transition: top 0.8s cubic-bezier(0.16, 1, 0.3, 1), left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 10;
         }
 
-        /* GLASS MORPHISM EFFECT */
+        /* GLASS MORPHISM WITH BLUR */
         .glass-base {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
             border: 1px solid rgba(255, 255, 255, 0.2);
             width: 440px;
             border-radius: 45px;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
             transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -93,7 +72,7 @@
             border: 2px solid #fff;
         }
 
-        /* EXTRA PANEL (BRIGHTER) */
+        /* EXTRA PANEL (SOCIALS) */
         .card-extra {
             position: absolute; bottom: 0; left: 0; z-index: 1;
             height: 140px; display: flex; justify-content: space-around;
@@ -117,10 +96,6 @@
     </style>
 </head>
 <body>
-
-    <div class="background-static">
-        <img src="bg.jpg" id="bg-parallax" alt="Background">
-    </div>
 
     <div class="panel-container" id="panel-container">
         <div class="real-time-clock" id="real-time-clock">00:00</div>
@@ -168,7 +143,7 @@
             clockBtn.classList.toggle('active');
         });
 
-        // Current Time
+        // Current Time Function
         function updateClock() {
             const now = new Date();
             clockElement.textContent = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
@@ -176,7 +151,7 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // Corner Interaction
+        // Corner Teleport
         document.getElementById('card-main').addEventListener('click', (e) => {
             if (e.target.closest('.btn') || e.target.closest('#clock-trigger')) return;
             const rect = container.getBoundingClientRect();
