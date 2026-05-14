@@ -10,18 +10,18 @@
         body, html {
             width: 100%; height: 100vh;
             display: flex; justify-content: center; align-items: center;
-            /* ОСНОВНОЙ ФОН - Глубокий градиент */
-            background: #000;
+            background: #100;
+            /* Multi-layer gradient for blur visibility */
             background-image: 
                 radial-gradient(at 0% 0%, rgba(26, 26, 46, 1) 0, transparent 50%), 
-                radial-gradient(at 50% 0%, rgba(46, 26, 71, 1) 0, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(26, 46, 71, 1) 0, transparent 50%);
+                radial-gradient(at 0% 0%, rgba(46, 26, 71, 1) 0, transparent 50%),
+                radial-gradient(at 0% 0%, rgba(26, 46, 71, 1) 0, transparent 50%);
             color: white;
             font-family: 'Segoe UI', Roboto, sans-serif;
             overflow: hidden;
         }
 
-        /* АНИМИРОВАННЫЕ ПЯТНА ДЛЯ БЛЮРА */
+        /* Animated background spots for the glass effect */
         body::before, body::after {
             content: "";
             position: absolute;
@@ -64,7 +64,6 @@
             width: auto;
             min-width: 440px;
             padding: 35px;
-            /* Мощный блюр и прозрачность */
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(55px) saturate(200%);
             -webkit-backdrop-filter: blur(55px) saturate(200%);
@@ -111,7 +110,7 @@
             border: 2px solid #fff;
         }
 
-        /* SECOND PANEL (RESTORED) */
+        /* SECOND PANEL */
         .card-extra {
             position: absolute; bottom: 0; left: 0; z-index: 10;
             height: 140px; width: 100%;
@@ -172,17 +171,20 @@
         const clockBtn = document.getElementById('clock-trigger');
         const clockElement = document.getElementById('real-time-clock');
 
+        // Toggle Socials Logic
         toggleBtn.addEventListener('click', () => {
             container.classList.toggle('is-open');
             toggleBtn.classList.toggle('active');
             toggleBtn.textContent = container.classList.contains('is-open') ? "Close" : "More socials";
         });
 
+        // Toggle Clock Logic
         clockBtn.addEventListener('click', () => {
             container.classList.toggle('show-clock');
             clockBtn.classList.toggle('active');
         });
 
+        // Clock Update Function
         function updateClock() {
             const now = new Date();
             clockElement.textContent = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
@@ -190,15 +192,16 @@
         updateClock();
         setInterval(updateClock, 1000);
 
+        // Corner Jump Animation
         document.getElementById('card-main').addEventListener('click', (e) => {
             if (e.target.closest('.btn') || e.target.closest('#clock-trigger')) return;
             const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            const cs = 90; 
-            if ((x < cs || x > rect.width - cs) && (y < cs || y > rect.height - cs)) {
-                container.style.left = (x < cs ? -150 : 150) + "px";
-                container.style.top = (y < cs ? -150 : 150) + "px";
+            const cornerSize = 90; 
+            if ((x < cornerSize || x > rect.width - cornerSize) && (y < cornerSize || y > rect.height - cornerSize)) {
+                container.style.left = (x < cornerSize ? -150 : 150) + "px";
+                container.style.top = (y < cornerSize ? -150 : 150) + "px";
             } else {
                 container.style.left = "0px"; container.style.top = "0px";
             }
