@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio | Flat Design with Button Depth</title>
+    <title>Bio | Glassmorphism Depth</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -19,7 +19,7 @@
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
             z-index: -1; object-fit: cover;
-            filter: brightness(0.4) blur(2px);
+            filter: brightness(0.5) blur(2px);
             transform: scale(1.1);
         }
 
@@ -29,15 +29,16 @@
             transition: transform 0.1s ease-out, top 0.8s cubic-bezier(0.4, 0, 0.2, 1), left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* GLASS EFFECT FOR BOTH CARDS */
         .glass-base {
-            background: rgba(140, 140, 140, 0.75);
-            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.45);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px) saturate(150%);
+            -webkit-backdrop-filter: blur(25px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             width: 440px;
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* CLOCK PANEL (TOP) */
         .real-time-clock {
             position: absolute;
             top: 20px; left: 50%;
@@ -49,51 +50,52 @@
             pointer-events: none;
         }
 
-        /* MAIN CARD */
         .card-main {
             position: relative;
             z-index: 100; 
             padding: 35px; border-radius: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
         }
 
-        /* BUTTON DEPTH EFFECT LOGIC */
+        /* CIRCLE BTN WITH BLUR */
         .mini-circle-btn {
             width: 22px; height: 22px;
-            background: #fff; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
             margin: 12px auto 4px; cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.3); /* Initial shadow for depth */
+            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
         }
 
-        /* Pressed / Active State for Circle Button */
         .mini-circle-btn.active {
-            background: #000;
-            transform: translateY(3px); /* Stays pushed down */
-            box-shadow: 0 0px 0 rgba(0,0,0,0);
-            border: 2px solid #fff;
+            background: #fff;
+            transform: translateY(3px);
+            box-shadow: 0 0px 0 transparent, 0 0 15px rgba(255,255,255,0.5);
         }
 
+        /* GLASS BUTTONS (TABLE 1) */
         .btn {
-            text-decoration: none; color: #000;
-            background: #fff; border: none;
+            text-decoration: none; color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 12px; border-radius: 16px;
             font-size: 13px; font-weight: 900; 
             text-transform: uppercase; text-align: center;
             transition: all 0.3s ease; cursor: pointer;
             display: block; width: 100%;
             position: relative; z-index: 200;
-            box-shadow: 0 5px 0 rgba(0,0,0,0.2); /* Depth effect */
+            box-shadow: 0 5px 0 rgba(0,0,0,0.2);
         }
 
-        /* Pressed / Active State for Main Button */
         .btn.active {
-            background: #000 !important;
-            color: #fff !important;
-            transform: translateY(4px); /* Stays pushed down */
-            box-shadow: 0 0px 0 rgba(0,0,0,0);
+            background: rgba(255, 255, 255, 0.3) !important;
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 transparent, 0 0 20px rgba(255,255,255,0.2);
         }
 
-        /* SOCIAL PANEL (BOTTOM) */
+        /* SOCIAL PANEL (TABLE 2) */
         .card-extra {
             position: absolute;
             bottom: 0; left: 0;
@@ -105,18 +107,32 @@
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* REVEAL WITHOUT ROTATION */
+        /* SOCIAL ICONS WITH LIFT AND GLOW */
+        .social-icon {
+            width: 85px; height: 85px; 
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 25px; display: flex; justify-content: center; align-items: center;
+            text-decoration: none; color: white; font-weight: 900;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Lift effect for Table 2 buttons */
+        .social-icon:active, .social-icon.clicked {
+            transform: translateY(-10px) scale(1.05);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 30px rgba(255, 255, 255, 0.3); /* Glow effect */
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
         .panel-container.show-clock .real-time-clock { top: -70px; opacity: 1; }
         .panel-container.is-open .card-extra { bottom: -150px; opacity: 1; pointer-events: auto; }
 
-        .clock-label { font-size: 10px; font-weight: 900; text-transform: uppercase; color: rgba(255,255,255,0.7); pointer-events: none; }
+        .clock-label { font-size: 10px; font-weight: 900; text-transform: uppercase; color: rgba(255,255,255,0.7); }
         .profile-top { display: flex; align-items: center; gap: 25px; margin-bottom: 20px; }
-        .avatar { width: 115px; height: 115px; border-radius: 30px; object-fit: cover; border: 2px solid rgba(255,255,255,0.5); }
-        .social-icon {
-            width: 85px; height: 85px; background: rgba(255,255,255,0.3);
-            border-radius: 25px; display: flex; justify-content: center; align-items: center;
-            text-decoration: none; color: black; font-weight: 900; transition: 0.3s;
-        }
+        .avatar { width: 115px; height: 115px; border-radius: 30px; object-fit: cover; border: 2px solid rgba(255,255,255,0.4); }
     </style>
 </head>
 <body>
@@ -158,20 +174,26 @@
         const clockBtn = document.getElementById('clock-trigger');
         const clockElement = document.getElementById('real-time-clock');
 
-        // Toggle Socials + Depth Effect
         toggleBtn.addEventListener('click', () => {
             container.classList.toggle('is-open');
-            toggleBtn.classList.toggle('active'); // Stays pressed
+            toggleBtn.classList.toggle('active');
             toggleBtn.textContent = container.classList.contains('is-open') ? "Close" : "More socials";
         });
 
-        // Toggle Clock + Depth Effect
         clockBtn.addEventListener('click', () => {
             container.classList.toggle('show-clock');
-            clockBtn.classList.toggle('active'); // Stays pressed
+            clockBtn.classList.toggle('active');
         });
 
-        // Parallax (Only movement, NO ROTATION)
+        // Add visual feedback for social icons
+        document.querySelectorAll('.social-icon').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                e.preventDefault();
+                icon.classList.add('clicked');
+                setTimeout(() => icon.classList.remove('clicked'), 300);
+            });
+        });
+
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
@@ -185,7 +207,6 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // Corner Teleport
         document.getElementById('card-main').addEventListener('click', (e) => {
             if (e.target.closest('.btn') || e.target.closest('#clock-trigger')) return;
             const rect = container.getBoundingClientRect();
