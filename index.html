@@ -84,7 +84,6 @@
 
         .specs-title { font-size: 16px; font-weight: 900; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
         .item-list { list-style: none; overflow-y: auto; flex-grow: 1; }
-        .item-list::-webkit-scrollbar { width: 0; }
         .item-list li { font-size: 13px; font-weight: 600; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .item-list a { text-decoration: none; color: rgba(255,255,255,0.5); transition: 0.3s; display: block; }
         .item-list a:hover { color: #fff; transform: translateX(5px); }
@@ -125,11 +124,11 @@
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <img src="ava.jpg" class="avatar">
                     <div class="square-row">
+                        <div class="btn btn-short" style="background:rgba(255,255,255,0.1); margin-bottom: 8px; width: 100%;" id="next-theme">Next Theme</div>
                         <div class="row-group">
                             <div class="btn btn-short" id="music-trigger">Music</div>
                             <div class="btn btn-short" id="clock-trigger">Time</div>
                         </div>
-                        <div class="btn btn-short" style="background:rgba(255,255,255,0.1)" id="next-theme">Next Theme</div>
                     </div>
                 </div>
                 <div class="nav-links">
@@ -171,7 +170,11 @@
         const socialBtn = document.getElementById('toggle-more');
         const themeBtn = document.getElementById('next-theme');
 
-        const themes = ['bg1.jpg', 'bg2.jpg', 'bg3.jpg', 'bg4.jpg'];
+        // Расширенный список фонов (1-10)
+        const themes = [
+            'bg1.jpg', 'bg2.jpg', 'bg3.jpg', 'bg4.jpg', 'bg5.jpg', 
+            'bg6.jpg', 'bg7.jpg', 'bg8.jpg', 'bg9.jpg', 'bg10.jpg'
+        ];
         let currentTheme = 0;
 
         themeBtn.onclick = () => {
