@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio | PC Specs Extension</title>
+    <title>Bio | Full Expansion UI</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -34,89 +34,84 @@
             backdrop-filter: blur(40px) saturate(160%);
             -webkit-backdrop-filter: blur(40px) saturate(160%);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            width: 440px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: all 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        .card-main { position: relative; z-index: 100; padding: 35px; border-radius: 45px; }
+        .card-main { position: relative; z-index: 100; width: 440px; padding: 35px; border-radius: 45px; }
 
-        /* PC SPECS PANEL (Right Side) */
-        .card-pc {
-            position: absolute;
-            right: 0; top: 0;
-            z-index: 50;
-            height: 100%;
-            width: 320px;
-            border-radius: 40px;
-            padding: 30px;
-            opacity: 0;
-            pointer-events: none;
-            transform: translateX(0);
-            transition: all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            display: flex;
-            flex-direction: column;
+        /* SIDE PANELS BASE */
+        .side-panel {
+            position: absolute; top: 0; z-index: 50;
+            height: 100%; width: 340px; border-radius: 40px;
+            padding: 30px; opacity: 0; pointer-events: none;
+            display: flex; flex-direction: column;
         }
 
-        .panel-container.pc-open .card-pc {
-            transform: translateX(340px);
-            opacity: 1;
-            pointer-events: auto;
-        }
+        /* PC PANEL (RIGHT) */
+        .card-pc { right: 0; transform: translateX(0); }
+        .panel-container.pc-open .card-pc { transform: translateX(355px); opacity: 1; pointer-events: auto; }
+
+        /* MUSIC PANEL (LEFT) */
+        .card-music { left: 0; transform: translateX(0); }
+        .panel-container.music-open .card-music { transform: translateX(-355px); opacity: 1; pointer-events: auto; }
 
         .specs-title {
-            font-size: 18px; font-weight: 900; text-transform: uppercase;
-            margin-bottom: 20px; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.2);
+            font-size: 16px; font-weight: 900; text-transform: uppercase;
+            margin-bottom: 15px; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.15);
             padding-bottom: 10px; color: rgba(255,255,255,0.9);
         }
 
-        .specs-list { list-style: none; }
-        .specs-list li {
-            font-size: 14px; font-weight: 600; padding: 10px 0;
-            color: rgba(255,255,255,0.7); border-bottom: 1px solid rgba(255,255,255,0.05);
-            display: flex; align-items: center;
+        /* SCROLLABLE LIST FOR MUSIC */
+        .list-container {
+            flex-grow: 1; overflow-y: auto; padding-right: 5px;
         }
-        .specs-list li::before {
-            content: ""; width: 6px; height: 6px; background: #fff; 
-            border-radius: 50%; margin-right: 12px; opacity: 0.5;
+        .list-container::-webkit-scrollbar { width: 0px; } /* Hide scrollbar */
+
+        .item-list { list-style: none; }
+        .item-list li {
+            font-size: 13px; font-weight: 600; padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .item-list a {
+            text-decoration: none; color: rgba(255,255,255,0.6);
+            transition: 0.3s; display: block;
+        }
+        .item-list a:hover { color: #fff; transform: translateX(5px); }
+
+        /* AVATAR & CONTROLS */
+        .avatar { width: 115px; height: 115px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.3); }
+        
+        .controls-row { 
+            margin-top: 15px; display: flex; flex-direction: column; align-items: center; gap: 10px;
         }
 
-        /* AVATAR & CLOCK */
-        .avatar-container { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.4s ease; }
-        .avatar-container:active { transform: translateY(-8px); }
-        .avatar { width: 115px; height: 115px; border-radius: 35px; object-fit: cover; border: 1px solid rgba(255,255,255,0.3); }
-
-        .clock-control { margin-top: 15px; display: flex; flex-direction: column; align-items: center; }
         .mini-circle-btn {
             width: 22px; height: 22px; background: rgba(255,255,255,0.6);
             border-radius: 50%; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);
         }
-        .mini-circle-btn.active { background: #fff; transform: translateY(2px); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        .mini-circle-btn.active { background: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.3); }
 
-        /* BUTTONS */
+        /* NEW SQUARE MUSIC BUTTON */
+        .square-btn {
+            width: 22px; height: 22px; background: rgba(255,255,255,0.4);
+            border-radius: 6px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2);
+        }
+        .square-btn.active { background: #fff; transform: scale(1.1); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
+
         .btn {
-            color: rgba(255,255,255,0.9);
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(15px);
-            padding: 14px; border-radius: 20px;
-            font-size: 13px; font-weight: 800; text-transform: uppercase;
-            text-align: center; cursor: pointer; display: block; width: 100%;
-            margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-            user-select: none; text-decoration: none;
+            text-decoration: none; color: rgba(255,255,255,0.9);
+            background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(15px);
+            padding: 14px; border-radius: 20px; font-size: 13px; font-weight: 800;
+            text-transform: uppercase; text-align: center; cursor: pointer; display: block;
+            width: 100%; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.3s;
         }
+        .btn.active { background: rgba(255, 255, 255, 0.15) !important; border-color: rgba(255, 255, 255, 0.4); }
 
-        .btn.active {
-            background: rgba(255, 255, 255, 0.15) !important;
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(3px);
-        }
-
-        /* SOCIAL PANEL (Bottom) */
         .card-extra {
             position: absolute; bottom: 0; left: 0; z-index: 10;
-            height: 140px; border-radius: 40px;
+            height: 140px; border-radius: 40px; width: 440px;
             display: flex; justify-content: space-around; align-items: center;
             padding: 0 25px; opacity: 0; pointer-events: none;
             transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -126,17 +121,14 @@
             width: 85px; height: 85px; background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1);
             border-radius: 28px; display: flex; justify-content: center; align-items: center;
-            color: white; font-weight: 900; font-size: 14px; cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            user-select: none;
+            color: white; font-weight: 900; transition: 0.4s;
         }
 
-        /* LOGIC STATES */
         .panel-container.show-clock .real-time-clock { top: -75px; opacity: 1; }
         .panel-container.is-open .card-extra { bottom: -160px; opacity: 1; pointer-events: auto; }
 
-        .real-time-clock { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 36px; font-weight: 900; letter-spacing: 6px; transition: 0.6s; z-index: 1; opacity: 0; }
-        .clock-label { font-size: 10px; font-weight: 900; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 5px; }
+        .real-time-clock { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 36px; font-weight: 900; letter-spacing: 6px; opacity: 0; }
+        .label-text { font-size: 8px; font-weight: 900; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 3px; }
         .profile-top { display: flex; align-items: flex-start; gap: 25px; margin-bottom: 20px; }
     </style>
 </head>
@@ -148,15 +140,36 @@
         
         <div class="real-time-clock" id="real-time-clock">00:00</div>
 
+        <div class="glass-base side-panel card-music" id="card-music">
+            <h2 class="specs-title">Top Songs</h2>
+            <div class="list-container">
+                <ul class="item-list">
+                    <li><a href="https://soundcloud.com/conzeptbeats/mattyeux-videoclub-vhs-5" target="_blank">Vh5-playlisted</a></li>
+                    <li><a href="https://soundcloud.com/s0rrowmusic/fake-ur-face" target="_blank">s0rrow - fake ur face</a></li>
+                    <li><a href="https://soundcloud.com/s0rrowmusic/unhappy" target="_blank">s0rrow - unhappy</a></li>
+                    <li><a href="https://soundcloud.com/s0rrowmusic/im-not-alright-1" target="_blank">s0rrow - im not alright</a></li>
+                    <li><a href="https://soundcloud.com/s0rrowmusic/stalk-ur-socials-9" target="_blank">s0rrow - stalk ur socials</a></li>
+                    <li><a href="https://soundcloud.com/duskysdemise/bedrott" target="_blank">duskydemise - bedrott</a></li>
+                    <li><a href="https://soundcloud.com/bully_maguire/sun" target="_blank">Soundgarden - Black Hole Sun</a></li>
+                    <li><a href="https://soundcloud.com/errorz0ne/detached" target="_blank">errorz0ne - Detached</a></li>
+                    <li><a href="https://soundcloud.com/riodayungog/lights-off" target="_blank">Rio Da Yung Og - Lights Off</a></li>
+                </ul>
+            </div>
+        </div>
+
         <div class="glass-base card-main" id="card-main">
             <div class="profile-top">
                 <div style="display: flex; flex-direction: column; align-items: center;">
-                    <div class="avatar-container">
-                        <img src="ava.jpg" alt="Avatar" class="avatar">
-                    </div>
-                    <div class="clock-control">
-                        <div class="mini-circle-btn" id="clock-trigger"></div>
-                        <div class="clock-label">Clock</div>
+                    <img src="ava.jpg" alt="Avatar" class="avatar">
+                    <div class="controls-row">
+                        <div style="text-align: center;">
+                            <div class="mini-circle-btn" id="clock-trigger"></div>
+                            <div class="label-text">Clock</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="square-btn" id="music-trigger"></div>
+                            <div class="label-text">Songs</div>
+                        </div>
                     </div>
                 </div>
                 
@@ -170,9 +183,9 @@
             <button class="btn" id="toggle-more">More socials</button>
         </div>
 
-        <div class="glass-base card-pc" id="card-pc">
+        <div class="glass-base side-panel card-pc" id="card-pc">
             <h2 class="specs-title">My Config</h2>
-            <ul class="specs-list">
+            <ul class="item-list">
                 <li>i5-13400</li>
                 <li>RTX 3060ti</li>
                 <li>16gb RAM</li>
@@ -196,56 +209,41 @@
         const toggleBtn = document.getElementById('toggle-more');
         const clockBtn = document.getElementById('clock-trigger');
         const pcBtn = document.getElementById('pc-trigger');
+        const musicBtn = document.getElementById('music-trigger');
         const clockElement = document.getElementById('real-time-clock');
 
-        // Toggle Socials
         toggleBtn.addEventListener('click', () => {
             container.classList.toggle('is-open');
             toggleBtn.classList.toggle('active');
-            toggleBtn.textContent = container.classList.contains('is-open') ? "Close" : "More socials";
         });
 
-        // Toggle Clock
         clockBtn.addEventListener('click', () => {
             container.classList.toggle('show-clock');
             clockBtn.classList.toggle('active');
         });
 
-        // Toggle PC Specs
         pcBtn.addEventListener('click', () => {
             container.classList.toggle('pc-open');
             pcBtn.classList.toggle('active');
         });
 
-        // Parallax Effect
+        musicBtn.addEventListener('click', () => {
+            container.classList.toggle('music-open');
+            musicBtn.classList.toggle('active');
+        });
+
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
             bg.style.transform = `scale(1.1) translate(${x * -15}px, ${y * -15}px)`;
         });
         
-        // Live Clock
         function updateClock() {
             const now = new Date();
             clockElement.textContent = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
         }
         updateClock();
         setInterval(updateClock, 1000);
-
-        // Corner Jump Animation
-        document.getElementById('card-main').addEventListener('click', (e) => {
-            if (e.target.closest('.btn') || e.target.closest('.mini-circle-btn') || e.target.closest('.avatar-container')) return;
-            const rect = container.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const cs = 85; 
-            if ((x < cs || x > rect.width - cs) && (y < cs || y > rect.height - cs)) {
-                container.style.left = (x < cs ? -150 : 150) + "px";
-                container.style.top = (y < cs ? -150 : 150) + "px";
-            } else {
-                container.style.left = "0px"; container.style.top = "0px";
-            }
-        });
     </script>
 </body>
 </html>
