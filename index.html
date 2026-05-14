@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio | sybau</title>
+    <title>idk</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html {
@@ -13,14 +13,18 @@
             font-family: 'Segoe UI', sans-serif;
             overflow: hidden; perspective: 2000px;
         }
+
         #bg-parallax {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
             z-index: -1; object-fit: cover;
             filter: brightness(0.35) blur(2px);
             transform: scale(1.1);
+            transition: opacity 0.8s ease-in-out;
         }
+
         .panel-container { position: relative; display: flex; flex-direction: column; align-items: center; transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        
         .glass-base {
             background: rgba(255, 255, 255, 0.07);
             backdrop-filter: blur(40px) saturate(160%);
@@ -29,9 +33,9 @@
             box-shadow: 0 30px 60px rgba(0,0,0,0.5);
             transition: all 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
+
         .card-main { position: relative; z-index: 100; width: 480px; padding: 35px; border-radius: 45px; }
 
-        /* ВЕРХНЯЯ ТАБЛИЧКА ЧАСОВ */
         .card-top-clock {
             position: absolute; top: 0; left: 50%; transform: translate(-50%, 0);
             width: 420px; height: 100px; border-radius: 30px;
@@ -45,14 +49,12 @@
         .time-val { font-size: 18px; font-weight: 800; }
         .time-main { font-size: 32px; font-weight: 900; color: #fff; }
 
-        /* БОКОВИНЫ */
         .side-panel { position: absolute; top: 0; z-index: 50; height: 100%; width: 340px; border-radius: 40px; padding: 30px; opacity: 0; pointer-events: none; display: flex; flex-direction: column; }
         .card-music { left: 0; }
         .panel-container.music-open .card-music { transform: translateX(-390px); opacity: 1; pointer-events: auto; }
         .card-pc { right: 0; }
         .panel-container.pc-open .card-pc { transform: translateX(390px); opacity: 1; pointer-events: auto; }
 
-        /* НИЖНЯЯ ПАНЕЛЬ */
         .card-extra {
             position: absolute; bottom: 0; left: 0; z-index: 10;
             height: 120px; border-radius: 40px; width: 100%;
@@ -62,7 +64,6 @@
         }
         .panel-container.social-open .card-extra { transform: translateY(140px); opacity: 1; pointer-events: auto; }
 
-        /* КНОПКИ */
         .btn {
             color: rgba(255,255,255,0.9); background: rgba(255, 255, 255, 0.06); 
             padding: 14px; border-radius: 20px; font-size: 11px; font-weight: 800; 
@@ -73,8 +74,10 @@
         .btn:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255,255,255,0.3); }
         .btn.active { background: rgba(255, 255, 255, 0.2) !important; border-color: #fff; }
 
-        .square-row { display: flex; gap: 10px; width: 130px; margin-top: 15px; }
-        .btn-short { margin-bottom: 0; padding: 14px 0; flex: 1; font-size: 10px; }
+        .square-row { display: flex; flex-direction: column; gap: 8px; width: 130px; margin-top: 15px; }
+        .row-group { display: flex; gap: 8px; width: 100%; }
+        .btn-short { margin-bottom: 0; padding: 12px 0; flex: 1; font-size: 9px; }
+        
         .avatar { width: 130px; height: 130px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.2); object-fit: cover; }
         .profile-top { display: flex; align-items: flex-start; gap: 25px; margin-bottom: 20px; }
         .nav-links { display: flex; flex-direction: column; flex-grow: 1; padding-top: 5px; }
@@ -96,7 +99,8 @@
     </style>
 </head>
 <body>
-    <img src="bg.jpg" id="bg-parallax">
+    <img src="bg1.jpg" id="bg-parallax">
+
     <div class="panel-container" id="panel-container">
         
         <div class="glass-base card-top-clock">
@@ -121,8 +125,11 @@
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <img src="ava.jpg" class="avatar">
                     <div class="square-row">
-                        <div class="btn btn-short" id="music-trigger">Music</div>
-                        <div class="btn btn-short" id="clock-trigger">Time</div>
+                        <div class="row-group">
+                            <div class="btn btn-short" id="music-trigger">Music</div>
+                            <div class="btn btn-short" id="clock-trigger">Time</div>
+                        </div>
+                        <div class="btn btn-short" style="background:rgba(255,255,255,0.1)" id="next-theme">Next Theme</div>
                     </div>
                 </div>
                 <div class="nav-links">
@@ -141,7 +148,7 @@
                 <li>CPU: i5-13400</li>
                 <li>GPU: RTX 3060ti</li>
                 <li>RAM: 16gb DDR5 6000mhz</li>
-                <li>Monitor: QHD 200hz Redmi</li>
+                <li>Monitor: 200hz Redmi</li>
                 <li>Keyboard: Ajazz ak820</li>
                 <li>Mouse: Vgn dragonfly f1 pro</li>
             </ul>
@@ -162,6 +169,19 @@
         const clockBtn = document.getElementById('clock-trigger');
         const pcBtn = document.getElementById('pc-trigger');
         const socialBtn = document.getElementById('toggle-more');
+        const themeBtn = document.getElementById('next-theme');
+
+        const themes = ['bg1.jpg', 'bg2.jpg', 'bg3.jpg', 'bg4.jpg'];
+        let currentTheme = 0;
+
+        themeBtn.onclick = () => {
+            currentTheme = (currentTheme + 1) % themes.length;
+            bg.style.opacity = 0;
+            setTimeout(() => {
+                bg.src = themes[currentTheme];
+                bg.style.opacity = 1;
+            }, 400);
+        };
 
         musicBtn.onclick = () => { container.classList.toggle('music-open'); musicBtn.classList.toggle('active'); };
         clockBtn.onclick = () => { container.classList.toggle('clock-open'); clockBtn.classList.toggle('active'); };
