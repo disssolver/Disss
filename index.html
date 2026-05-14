@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio | Liquid Glass English UI</title>
+    <title>Bio | Final Solid Background</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -16,51 +16,55 @@
             overflow: hidden;
         }
 
-        /* BACKGROUND SYSTEM */
-        .bg-wrapper {
-            position: fixed; top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            z-index: -1; overflow: hidden;
+        /* HARD-FIXED BACKGROUND */
+        .background-static {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -999; /* Always behind everything */
+            pointer-events: none;
         }
 
         #bg-parallax {
-            width: 110%; height: 110%;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            position: absolute;
-            top: -5%; left: -5%;
-            filter: brightness(0.4) blur(10px); 
-            transition: transform 0.1s ease-out;
+            filter: brightness(0.4) blur(10px);
+            display: block;
         }
 
         .panel-container {
             position: relative;
-            display: flex; flex-direction: column; align-items: center;
-            transition: top 0.9s cubic-bezier(0.16, 1, 0.3, 1), left 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: top 0.8s cubic-bezier(0.16, 1, 0.3, 1), left 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 10;
         }
 
-        /* GLASS CARD STYLES */
+        /* GLASS MORPHISM EFFECT */
         .glass-base {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(45px) saturate(180%);
-            -webkit-backdrop-filter: blur(45px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             width: 440px;
             border-radius: 45px;
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .card-main { position: relative; z-index: 100; padding: 35px; }
 
-        /* CLOCK PANEL */
         .real-time-clock {
             position: absolute;
             top: 20px; left: 50%; transform: translateX(-50%);
             font-size: 38px; font-weight: 900; letter-spacing: 8px;
-            opacity: 0; transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1;
+            opacity: 0; transition: 0.7s ease; z-index: 1;
         }
 
-        /* BUTTONS DEPTH EFFECT */
+        /* BUTTONS WITH DEPTH TOGGLE */
         .btn {
             text-decoration: none; color: #000;
             background: rgba(255, 255, 255, 0.9);
@@ -68,61 +72,54 @@
             font-size: 13px; font-weight: 800; text-transform: uppercase;
             text-align: center; cursor: pointer; display: block; width: 100%;
             margin-bottom: 12px; border: none;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
+            transition: 0.3s;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* Active/Pressed State */
         .btn.active {
             background: #000 !important; color: #fff !important;
             transform: translateY(4px) scale(0.98);
-            box-shadow: 0 0 0 transparent;
+            box-shadow: none;
         }
 
         .mini-circle-btn {
             width: 24px; height: 24px; background: #fff;
             border-radius: 50%; margin: 15px auto 5px; cursor: pointer;
-            transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
         .mini-circle-btn.active {
-            background: #000; transform: translateY(2px) scale(0.9);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            background: #000; transform: translateY(2px);
             border: 2px solid #fff;
         }
 
-        /* SOCIAL PANEL (BOTTOM) */
+        /* EXTRA PANEL (BRIGHTER) */
         .card-extra {
-            position: absolute; bottom: 0; left: 0; z-index: 10;
+            position: absolute; bottom: 0; left: 0; z-index: 1;
             height: 140px; display: flex; justify-content: space-around;
             align-items: center; padding: 0 25px; opacity: 0;
-            pointer-events: none; transition: 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none; transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Animation States */
         .panel-container.show-clock .real-time-clock { top: -85px; opacity: 1; }
         .panel-container.is-open .card-extra { bottom: -160px; opacity: 1; pointer-events: auto; }
 
         .social-icon {
-            width: 85px; height: 85px; 
-            background: rgba(255, 255, 255, 0.95);
+            width: 85px; height: 85px; background: #fff;
             border-radius: 28px; display: flex; justify-content: center;
             align-items: center; text-decoration: none; color: #000;
             font-weight: 900; transition: 0.3s;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
-        .social-icon:hover { transform: translateY(-5px); background: #fff; }
-
-        .avatar { width: 120px; height: 120px; border-radius: 35px; border: 2px solid rgba(255, 255, 255, 0.3); }
+        .avatar { width: 120px; height: 120px; border-radius: 35px; border: 2px solid rgba(255,255,255,0.2); }
         .profile-top { display: flex; align-items: center; gap: 25px; margin-bottom: 15px; }
-        .clock-label { font-size: 10px; font-weight: 900; color: rgba(255, 255, 255, 0.7); text-transform: uppercase; }
+        .clock-label { font-size: 10px; font-weight: 900; color: rgba(255,255,255,0.6); text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-    <div class="bg-wrapper">
-        <img src="bg.jpg" id="bg-parallax" alt="Background Image">
+    <div class="background-static">
+        <img src="bg.jpg" id="bg-parallax" alt="Background">
     </div>
 
     <div class="panel-container" id="panel-container">
@@ -154,31 +151,24 @@
 
     <script>
         const container = document.getElementById('panel-container');
-        const bg = document.getElementById('bg-parallax');
         const toggleBtn = document.getElementById('toggle-more');
         const clockBtn = document.getElementById('clock-trigger');
         const clockElement = document.getElementById('real-time-clock');
 
-        // Mouse Parallax Logic
-        document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) - 0.5;
-            const y = (e.clientY / window.innerHeight) - 0.5;
-            bg.style.transform = `translate(${x * -30}px, ${y * -30}px) scale(1.1)`;
-        });
-
-        // Toggle Logic with depth effect
+        // Logic for More Socials
         toggleBtn.addEventListener('click', () => {
             container.classList.toggle('is-open');
             toggleBtn.classList.toggle('active');
             toggleBtn.textContent = container.classList.contains('is-open') ? "Close" : "More socials";
         });
 
+        // Logic for Clock
         clockBtn.addEventListener('click', () => {
             container.classList.toggle('show-clock');
             clockBtn.classList.toggle('active');
         });
 
-        // Clock Update
+        // Current Time
         function updateClock() {
             const now = new Date();
             clockElement.textContent = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
@@ -186,7 +176,7 @@
         updateClock();
         setInterval(updateClock, 1000);
 
-        // Corner Teleport
+        // Corner Interaction
         document.getElementById('card-main').addEventListener('click', (e) => {
             if (e.target.closest('.btn') || e.target.closest('#clock-trigger')) return;
             const rect = container.getBoundingClientRect();
