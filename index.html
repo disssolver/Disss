@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio | Independent Controls</title>
+    <title>Bio | Updated Socials</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -41,7 +41,6 @@
 
         .card-main { position: relative; z-index: 100; padding: 35px; border-radius: 45px; }
 
-        /* AVATAR - INDEPENDENT */
         .avatar-container { 
             display: flex; flex-direction: column; align-items: center; 
             cursor: pointer; transition: transform 0.4s ease;
@@ -55,7 +54,6 @@
         }
         .avatar-container:active .avatar { box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
 
-        /* CLOCK CONTROL - INDEPENDENT */
         .clock-control {
             margin-top: 15px; display: flex; flex-direction: column; align-items: center;
         }
@@ -71,7 +69,6 @@
             box-shadow: 0 0 15px rgba(255,255,255,0.3);
         }
 
-        /* BUTTONS */
         .btn {
             text-decoration: none; color: rgba(255,255,255,0.9);
             background: rgba(255, 255, 255, 0.06);
@@ -88,10 +85,8 @@
             background: rgba(255, 255, 255, 0.15) !important;
             border-color: rgba(255, 255, 255, 0.4);
             transform: translateY(3px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* SECOND PANEL */
         .card-extra {
             position: absolute; bottom: 0; left: 0; z-index: 10;
             height: 140px; border-radius: 40px;
@@ -104,8 +99,9 @@
             width: 85px; height: 85px; background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1);
             border-radius: 28px; display: flex; justify-content: center; align-items: center;
-            text-decoration: none; color: white; font-weight: 900;
+            text-decoration: none; color: white; font-weight: 900; font-size: 14px;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
         .social-icon:active { transform: translateY(-15px); background: rgba(255, 255, 255, 0.15); }
 
@@ -142,19 +138,19 @@
                 </div>
                 
                 <div class="nav-links" style="display: flex; flex-direction: column; gap: 10px; flex-grow: 1;">
-                    <a href="https://t.me/jurabek1608" class="btn">Telegram</a>
-                    <a href="https://discordapp.com/users/1035880231619280926" class="btn">Discord</a>
-                    <a href="https://steamcommunity.com/profiles/76561199554598143" class="btn">Steam</a>
+                    <a href="https://t.me/jurabek1608" target="_blank" class="btn">Telegram</a>
+                    <a href="https://discordapp.com/users/1035880231619280926" target="_blank" class="btn">Discord</a>
+                    <a href="https://steamcommunity.com/profiles/76561199554598143" target="_blank" class="btn">Steam</a>
                 </div>
             </div>
             <button class="btn" id="toggle-more">More socials</button>
         </div>
 
         <div class="glass-base card-extra" id="card-extra">
-            <a href="#" class="social-icon">INST</a>
-            <a href="#" class="social-icon">TT</a>
-            <a href="#" class="social-icon">SC</a>
-            <a href="#" class="social-icon">CLUB</a>
+            <a href="https://www.instagram.com/jurabek16_08?igsh=aTd0cHFmMTJzd2Q=" target="_blank" class="social-icon">INST</a>
+            <a href="https://www.tiktok.com/@disssolver_?_r=1&_t=ZS-96LBOb0G3RU" target="_blank" class="social-icon">TT</a>
+            <a href="https://soundcloud.com/uebokssxs?ref=clipboard&p=a&c=1&si=192d4d4efb6c449b874e5e1098403551&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="social-icon">SC</a>
+            <a href="https://socialclub.rockstargames.com/member/-Disssvoler-/games" target="_blank" class="social-icon">CLUB</a>
         </div>
     </div>
 
@@ -190,8 +186,7 @@
         setInterval(updateClock, 1000);
 
         document.getElementById('card-main').addEventListener('click', (e) => {
-            // Updated to check for independent elements
-            if (e.target.closest('.btn') || e.target.closest('.mini-circle-btn') || e.target.closest('.avatar-container')) return;
+            if (e.target.closest('.btn') || e.target.closest('.mini-circle-btn') || e.target.closest('.avatar-container') || e.target.closest('.social-icon')) return;
             const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
