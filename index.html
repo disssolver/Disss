@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio | Full Specs & Music</title>
+    <title>Bio | Full Connect</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -40,7 +40,7 @@
 
         .card-main { position: relative; z-index: 100; width: 480px; padding: 35px; border-radius: 45px; }
 
-        /* ВЕРХНЯЯ ТАБЛИЧКА ЧАСОВ */
+        /* ВЕРХНИЕ ЧАСЫ */
         .card-top-clock {
             position: absolute; top: 0; left: 50%;
             transform: translate(-50%, 0);
@@ -70,7 +70,7 @@
         .card-pc { right: 0; }
         .panel-container.pc-open .card-pc { transform: translateX(390px); opacity: 1; pointer-events: auto; }
 
-        /* НИЖНЯЯ ПАНЕЛЬ */
+        /* НИЖНИЕ СОЦСЕТИ */
         .card-extra {
             position: absolute; bottom: 0; left: 0; z-index: 10;
             height: 120px; border-radius: 40px; width: 100%;
@@ -89,6 +89,7 @@
             text-align: center; cursor: pointer; display: block; width: 100%;
             margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1); 
             transition: 0.3s; text-decoration: none;
+            letter-spacing: 1px;
         }
         .btn:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255,255,255,0.3); }
         .btn.active { background: rgba(255, 255, 255, 0.2) !important; border-color: #fff; }
@@ -108,12 +109,14 @@
         .item-list a { text-decoration: none; color: rgba(255,255,255,0.5); transition: 0.3s; display: block; }
         .item-list a:hover { color: #fff; transform: translateX(5px); }
 
+        /* ИКОНКИ */
         .social-icon {
             width: 80px; height: 80px; background: rgba(255, 255, 255, 0.08);
             border-radius: 25px; display: flex; justify-content: center; align-items: center; 
-            color: white; font-weight: 900; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1);
+            color: white; font-weight: 900; cursor: pointer; transition: 0.3s; 
+            border: 1px solid rgba(255,255,255,0.1); text-decoration: none; font-size: 12px;
         }
-        .social-icon:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.15); }
+        .social-icon:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.15); border-color: rgba(255,255,255,0.4); }
     </style>
 </head>
 <body>
@@ -163,9 +166,9 @@
                 </div>
                 
                 <div class="nav-links">
-                    <a href="#" class="btn">Telegram</a>
-                    <a href="#" class="btn">Discord</a>
-                    <a href="#" class="btn">Steam</a>
+                    <a href="https://t.me/ССЫЛКА" target="_blank" class="btn">Telegram</a>
+                    <a href="https://discord.com/users/ССЫЛКА" target="_blank" class="btn">Discord</a>
+                    <a href="https://steamcommunity.com/id/ССЫЛКА" target="_blank" class="btn">Steam</a>
                     <div class="btn" id="pc-trigger">My PC</div>
                 </div>
             </div>
@@ -185,10 +188,10 @@
         </div>
 
         <div class="glass-base card-extra">
-            <div class="social-icon">INST</div>
-            <div class="social-icon">TT</div>
-            <div class="social-icon">SC</div>
-            <div class="social-icon">CLUB</div>
+            <a href="https://instagram.com/ССЫЛКА" target="_blank" class="social-icon">INST</a>
+            <a href="https://tiktok.com/@ССЫЛКА" target="_blank" class="social-icon">TT</a>
+            <a href="https://soundcloud.com/ССЫЛКА" target="_blank" class="social-icon">SC</a>
+            <a href="https://socialclub.rockstargames.com/member/ССЫЛКА" target="_blank" class="social-icon">CLUB</a>
         </div>
     </div>
 
@@ -201,7 +204,7 @@
         const pcBtn = document.getElementById('pc-trigger');
         const socialBtn = document.getElementById('toggle-more');
 
-        // Логика
+        // Клик по кнопкам
         musicBtn.onclick = () => { container.classList.toggle('music-open'); musicBtn.classList.toggle('active'); };
         clockBtn.onclick = () => { container.classList.toggle('clock-open'); clockBtn.classList.toggle('active'); };
         pcBtn.onclick = () => { container.classList.toggle('pc-open'); pcBtn.classList.toggle('active'); };
@@ -212,12 +215,14 @@
             socialBtn.textContent = container.classList.contains('social-open') ? "Close" : "More socials";
         };
 
+        // Параллакс фона
         document.onmousemove = (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
             bg.style.transform = `scale(1.1) translate(${x * -20}px, ${y * -20}px)`;
         };
         
+        // Обновление всех часов
         function updateClocks() {
             const now = new Date();
             document.getElementById('time-local').textContent = now.toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'});
