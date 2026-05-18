@@ -14,6 +14,7 @@
             overflow: hidden; perspective: 2000px;
         }
 
+        /* НАСТРОЙКА ДЛЯ ЖИВЫХ ОБОЕВ */
         #bg-parallax {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
@@ -21,6 +22,7 @@
             filter: brightness(0.35) blur(2px);
             transform: scale(1.1);
             transition: opacity 0.8s ease-in-out;
+            pointer-events: none; /* Чтобы видео не мешало кликать по кнопкам */
         }
 
         .panel-container { position: relative; display: flex; flex-direction: column; align-items: center; transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -78,7 +80,6 @@
         .row-group { display: flex; gap: 8px; width: 100%; }
         .btn-short { margin-bottom: 0; padding: 12px 0; flex: 1; font-size: 9px; }
         
-        /* КЛИКАБЕЛЬНАЯ АВАТАРКА */
         .avatar-link { display: block; width: 130px; height: 130px; cursor: pointer; transition: transform 0.3s ease; }
         .avatar-link:hover { transform: scale(1.03); }
         .avatar { width: 100%; height: 100%; border-radius: 35px; border: 1px solid rgba(255,255,255,0.2); object-fit: cover; }
@@ -103,7 +104,9 @@
     </style>
 </head>
 <body>
-    <img src="bg1.jpg" id="bg-parallax">
+    <video autoplay loop muted playsinline id="bg-parallax">
+        <source src="bg1.mp4" type="video/mp4">
+    </video>
 
     <div class="panel-container" id="panel-container">
         
@@ -177,18 +180,59 @@
         const socialBtn = document.getElementById('toggle-more');
         const themeBtn = document.getElementById('next-theme');
 
+        // ИЗМЕНЕНО: первая тема mp4, остальные твои оригинальные .jpg сохранены
         const themes = [
-            'bg1.jpg', 'bg2.jpg', 'bg3.jpg', 'bg4.jpg', 'bg5.jpg', 
+            'bg1.mp4', 'bg2.jpg', 'bg3.jpg', 'bg4.jpg', 'bg5.jpg', 
             'bg6.jpg', 'bg7.jpg', 'bg8.jpg', 'bg9.jpg', 'bg10.jpg'
         ];
         let currentTheme = 0;
 
+        // ИЗМЕНЕНО: Логика динамического переключения картинок и видео
         themeBtn.onclick = () => {
             currentTheme = (currentTheme + 1) % themes.length;
             bg.style.opacity = 0;
+            
             setTimeout(() => {
-                bg.src = themes[currentTheme];
-                bg.style.opacity = 1;
+                const nextFile = themes[currentTheme];
+                
+                // Проверяем, какой файл включаем — видео или картинку
+                if (nextFile.endsWith('.mp4')) {
+                    // Если это видео, пересоздаем тег или меняем src внутри видео
+                    if (bg.tagName !== 'VIDEO') {
+                        const video = document.createElement('video');
+                        video.id = 'bg-parallax';
+                        video.autoplay = true;
+                        video.loop = true;
+                        video.muted = true;
+                        video.style.opacity = 0;
+                        video.innerHTML = `<source src="${nextFile}" type="video/mp4">`;
+                        bg.replaceWith(video);
+                        window.bg = video; // обновляем переменную глобально
+                    } else {
+                        bg.src = nextFile;
+                        bg.load();
+                        bg.play();
+                    }
+                } else {
+                    // Если обычная картинка jpg
+                    if (bg.tagName === 'VIDEO') {
+                        const img = document.createElement('img');
+                        img.id = 'bg-parallax';
+                        img.src = nextFile;
+                        img.style.opacity = 0;
+                        bg.replaceWith(img);
+                        window.bg = img;
+                    } else {
+                        bg.src = nextFile;
+                    }
+                }
+                
+                // Возвращаем видимость с задержкой, чтобы переход был плавным
+                setTimeout(() => {
+                    const activeBg = document.getElementById('bg-parallax');
+                    activeBg.style.opacity = 1;
+                }, 50);
+                
             }, 400);
         };
 
@@ -200,10 +244,12 @@
             socialBtn.textContent = container.classList.contains('social-open') ? "Close" : "More socials";
         };
 
+        // Эффект параллакса при движении мыши (работает и для видео)
         document.onmousemove = (e) => {
+            const activeBg = document.getElementById('bg-parallax');
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
-            bg.style.transform = `scale(1.1) translate(${x * -20}px, ${y * -20}px)`;
+            activeBg.style.transform = `scale(1.1) translate(${x * -20}px, ${y * -20}px)`;
         };
         
         function updateClocks() {
