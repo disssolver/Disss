@@ -14,7 +14,6 @@
             overflow: hidden; perspective: 2000px;
         }
 
-        /* ОБЩИЙ СТИЛЬ ДЛЯ ОБОЕВ */
         .bg-element {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
@@ -23,7 +22,7 @@
             transform: scale(1.1);
             transition: opacity 0.8s ease-in-out;
             pointer-events: none;
-            opacity: 0; /* По умолчанию скрыты, включаем через JS */
+            opacity: 0;
         }
 
         .panel-container { position: relative; display: flex; flex-direction: column; align-items: center; transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -39,6 +38,7 @@
 
         .card-main { position: relative; z-index: 100; width: 480px; padding: 35px; border-radius: 45px; }
 
+        /* ЧАСЫ */
         .card-top-clock {
             position: absolute; top: 0; left: 50%; transform: translate(-50%, 0);
             width: 420px; height: 100px; border-radius: 30px;
@@ -52,12 +52,14 @@
         .time-val { font-size: 18px; font-weight: 800; }
         .time-main { font-size: 32px; font-weight: 900; color: #fff; }
 
-        .side-panel { position: absolute; top: 0; z-index: 50; height: 100%; width: 340px; border-radius: 40px; padding: 30px; opacity: 0; pointer-events: none; display: flex; flex-direction: column; }
+        /* БОКОВЫЕ ПАНЕЛИ (ПК И МУЗЫКА) */
+        .side-panel { position: absolute; top: 0; z-index: 50; height: 100%; width: 340px; border-radius: 40px; padding: 30px; opacity: 0; pointer-events: none; display: flex; flex-direction: column; transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .card-music { left: 0; }
         .panel-container.music-open .card-music { transform: translateX(-390px); opacity: 1; pointer-events: auto; }
         .card-pc { right: 0; }
         .panel-container.pc-open .card-pc { transform: translateX(390px); opacity: 1; pointer-events: auto; }
 
+        /* ДОП СОЦСЕТИ СНИЗУ */
         .card-extra {
             position: absolute; bottom: 0; left: 0; z-index: 10;
             height: 120px; border-radius: 40px; width: 100%;
@@ -102,6 +104,33 @@
             border: 1px solid rgba(255,255,255,0.1); text-decoration: none; font-size: 12px;
         }
         .social-icon:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.15); }
+
+        /* АДАПТИВ ПОД ТЕЛЕФОНЫ (ИСПРАВЛЕНИЕ НАПОЛЗАНИЯ КОНФИГА) */
+        @media (max-width: 768px) {
+            .card-main { width: 90vw; max-width: 400px; padding: 25px; border-radius: 35px; }
+            .profile-top { gap: 15px; }
+            .avatar-link, .avatar { width: 110px; height: 110px; border-radius: 25px; }
+            .square-row { width: 110px; }
+
+            /* На смартфонах перекрываем панелями главную карточку, чтобы ничего не съезжало вниз */
+            .side-panel {
+                width: 100%; height: 100%; left: 0 !important; right: 0 !important; top: 0 !important;
+                border-radius: 35px; z-index: 200; transform: scale(0.9) !important;
+            }
+            .panel-container.music-open .card-music,
+            .panel-container.pc-open .card-pc {
+                transform: scale(1) !important; opacity: 1; pointer-events: auto;
+            }
+            
+            /* Сдвиг часов для мобильных */
+            .card-top-clock { width: 100%; border-radius: 25px; }
+            .panel-container.clock-open .card-top-clock { transform: translate(-50%, -110px); }
+
+            /* Сдвиг соцсетей для мобильных */
+            .card-extra { border-radius: 25px; height: 100px; }
+            .social-icon { width: 65px; height: 65px; border-radius: 18px; }
+            .panel-container.social-open .card-extra { transform: translateY(115px); }
+        }
     </style>
 </head>
 <body>
@@ -127,6 +156,7 @@
                 <li><a href="https://soundcloud.com/s0rrowmusic/stalk-ur-socials-9" target="_blank">s0rrow - stalk ur socials</a></li>
                 <li><a href="https://soundcloud.com/riodayungog/lights-off" target="_blank">Rio Da Yung Og - Lights Off</a></li>
             </ul>
+            <div class="btn" style="margin-top: 15px; margin-bottom: 0;" onclick="document.getElementById('music-trigger').click()">Back</div>
         </div>
 
         <div class="glass-base card-main">
@@ -153,7 +183,7 @@
             <div class="btn" id="toggle-more" style="margin-bottom: 0;">More socials</div>
         </div>
 
-        <div class="glass-base card-pc">
+        <div class="glass-base side-panel card-pc">
             <h2 class="specs-title">My Config</h2>
             <ul class="item-list">
                 <li>CPU: i5-13400</li>
@@ -163,6 +193,7 @@
                 <li>Keyboard: Ajazz ak820</li>
                 <li>Mouse: Vgn dragonfly f1 pro</li>
             </ul>
+            <div class="btn" style="margin-top: 15px; margin-bottom: 0;" onclick="document.getElementById('pc-trigger').click()">Back</div>
         </div>
 
         <div class="glass-base card-extra">
@@ -191,7 +222,6 @@
         let currentTheme = 0;
 
         themeBtn.onclick = () => {
-            // Мягко тушим текущий активный фон
             bgVideo.style.opacity = 0;
             bgImage.style.opacity = 0;
 
@@ -208,9 +238,10 @@
                     bgImage.src = nextFile;
                     bgImage.style.opacity = 1;
                 }
-            }, 400); // время затухания синхронизировано с CSS
+            }, 400);
         };
 
+        // Логика переключения классов активности кнопок и панелей
         musicBtn.onclick = () => { container.classList.toggle('music-open'); musicBtn.classList.toggle('active'); };
         clockBtn.onclick = () => { container.classList.toggle('clock-open'); clockBtn.classList.toggle('active'); };
         pcBtn.onclick = () => { container.classList.toggle('pc-open'); pcBtn.classList.toggle('active'); };
@@ -219,7 +250,6 @@
             socialBtn.textContent = container.classList.contains('social-open') ? "Close" : "More socials";
         };
 
-        // Параллакс теперь плавно двигает оба слоя одновременно
         document.onmousemove = (e) => {
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
