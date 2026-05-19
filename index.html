@@ -14,15 +14,16 @@
             overflow: hidden; perspective: 2000px;
         }
 
-        /* НАСТРОЙКА ДЛЯ ЖИВЫХ ОБОЕВ */
-        #bg-parallax {
+        /* ОБЩИЙ СТИЛЬ ДЛЯ ОБОЕВ */
+        .bg-element {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
             z-index: -1; object-fit: cover;
             filter: brightness(0.35) blur(2px);
             transform: scale(1.1);
             transition: opacity 0.8s ease-in-out;
-            pointer-events: none; /* Чтобы видео не мешало кликать по кнопкам */
+            pointer-events: none;
+            opacity: 0; /* По умолчанию скрыты, включаем через JS */
         }
 
         .panel-container { position: relative; display: flex; flex-direction: column; align-items: center; transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -104,9 +105,10 @@
     </style>
 </head>
 <body>
-    <video autoplay loop muted playsinline id="bg-parallax">
+    <video autoplay loop muted playsinline id="bg-video" class="bg-element" style="opacity: 1;">
         <source src="bg1.mp4" type="video/mp4">
     </video>
+    <img id="bg-image" class="bg-element">
 
     <div class="panel-container" id="panel-container">
         
@@ -151,7 +153,7 @@
             <div class="btn" id="toggle-more" style="margin-bottom: 0;">More socials</div>
         </div>
 
-        <div class="glass-base side-panel card-pc">
+        <div class="glass-base card-pc">
             <h2 class="specs-title">My Config</h2>
             <ul class="item-list">
                 <li>CPU: i5-13400</li>
@@ -173,67 +175,40 @@
 
     <script>
         const container = document.getElementById('panel-container');
-        const bg = document.getElementById('bg-parallax');
+        const bgVideo = document.getElementById('bg-video');
+        const bgImage = document.getElementById('bg-image');
+        
         const musicBtn = document.getElementById('music-trigger');
         const clockBtn = document.getElementById('clock-trigger');
         const pcBtn = document.getElementById('pc-trigger');
         const socialBtn = document.getElementById('toggle-more');
         const themeBtn = document.getElementById('next-theme');
 
-        // ИЗМЕНЕНО: первая тема mp4, остальные твои оригинальные .jpg сохранены
         const themes = [
             'bg1.mp4', 'bg2.jpg', 'bg3.jpg', 'bg4.jpg', 'bg5.jpg', 
             'bg6.jpg', 'bg7.jpg', 'bg8.jpg', 'bg9.jpg', 'bg10.jpg'
         ];
         let currentTheme = 0;
 
-        // ИЗМЕНЕНО: Логика динамического переключения картинок и видео
         themeBtn.onclick = () => {
+            // Мягко тушим текущий активный фон
+            bgVideo.style.opacity = 0;
+            bgImage.style.opacity = 0;
+
             currentTheme = (currentTheme + 1) % themes.length;
-            bg.style.opacity = 0;
-            
+            const nextFile = themes[currentTheme];
+
             setTimeout(() => {
-                const nextFile = themes[currentTheme];
-                
-                // Проверяем, какой файл включаем — видео или картинку
                 if (nextFile.endsWith('.mp4')) {
-                    // Если это видео, пересоздаем тег или меняем src внутри видео
-                    if (bg.tagName !== 'VIDEO') {
-                        const video = document.createElement('video');
-                        video.id = 'bg-parallax';
-                        video.autoplay = true;
-                        video.loop = true;
-                        video.muted = true;
-                        video.style.opacity = 0;
-                        video.innerHTML = `<source src="${nextFile}" type="video/mp4">`;
-                        bg.replaceWith(video);
-                        window.bg = video; // обновляем переменную глобально
-                    } else {
-                        bg.src = nextFile;
-                        bg.load();
-                        bg.play();
-                    }
+                    bgVideo.src = nextFile;
+                    bgVideo.load();
+                    bgVideo.play();
+                    bgVideo.style.opacity = 1;
                 } else {
-                    // Если обычная картинка jpg
-                    if (bg.tagName === 'VIDEO') {
-                        const img = document.createElement('img');
-                        img.id = 'bg-parallax';
-                        img.src = nextFile;
-                        img.style.opacity = 0;
-                        bg.replaceWith(img);
-                        window.bg = img;
-                    } else {
-                        bg.src = nextFile;
-                    }
+                    bgImage.src = nextFile;
+                    bgImage.style.opacity = 1;
                 }
-                
-                // Возвращаем видимость с задержкой, чтобы переход был плавным
-                setTimeout(() => {
-                    const activeBg = document.getElementById('bg-parallax');
-                    activeBg.style.opacity = 1;
-                }, 50);
-                
-            }, 400);
+            }, 400); // время затухания синхронизировано с CSS
         };
 
         musicBtn.onclick = () => { container.classList.toggle('music-open'); musicBtn.classList.toggle('active'); };
@@ -244,12 +219,13 @@
             socialBtn.textContent = container.classList.contains('social-open') ? "Close" : "More socials";
         };
 
-        // Эффект параллакса при движении мыши (работает и для видео)
+        // Параллакс теперь плавно двигает оба слоя одновременно
         document.onmousemove = (e) => {
-            const activeBg = document.getElementById('bg-parallax');
             const x = (e.clientX / window.innerWidth) - 0.5;
             const y = (e.clientY / window.innerHeight) - 0.5;
-            activeBg.style.transform = `scale(1.1) translate(${x * -20}px, ${y * -20}px)`;
+            const moveStyle = `scale(1.1) translate(${x * -20}px, ${y * -20}px)`;
+            bgVideo.style.transform = moveStyle;
+            bgImage.style.transform = moveStyle;
         };
         
         function updateClocks() {
